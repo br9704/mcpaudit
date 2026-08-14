@@ -1,0 +1,211 @@
+{
+  "schemaVersion": 1,
+  "tool": {
+    "name": "@br9704/mcp-audit",
+    "version": "0.1.0"
+  },
+  "startedAt": "2026-08-14T12:07:05.193Z",
+  "elapsedMs": 184,
+  "target": {
+    "raw": "node /private/tmp/claude-501/-Users-brunojaamaa-Desktop-mcpaudit/381dca63-5b83-4b21-962f-b15ca8857b14/scratchpad/probe/node_modules/@modelcontextprotocol/server-everything/dist/index.js stdio",
+    "kind": "stdio",
+    "describe": "node /private/tmp/claude-501/-Users-brunojaamaa-Desktop-mcpaudit/381dca63-5b83-4b21-962f-b15ca8857b14/scratchpad/probe/node_modules/@modelcontextprotocol/server-everything/dist/index.js stdio"
+  },
+  "era": "legacy",
+  "protocolVersion": "2025-11-25",
+  "serverInfo": {
+    "name": "mcp-servers/everything",
+    "version": "2.0.0",
+    "title": "Everything Reference Server"
+  },
+  "results": [
+    {
+      "ruleId": "C0_PROTOCOL_ERA",
+      "status": "fail",
+      "findings": [
+        {
+          "id": "C0_PRE_2026_PROTOCOL",
+          "ruleId": "C0_PROTOCOL_ERA",
+          "lane": "conformance",
+          "severity": "info",
+          "title": "Server speaks a pre-2026 revision (2025-11-25)",
+          "detail": "This server answered server/discover with an error and completed an initialize handshake at 2025-11-25. The current revision is 2026-07-28, which removed the handshake entirely. Conformance checks specific to the stateless protocol were skipped for this server.",
+          "evidence": {
+            "path": "initialize"
+          },
+          "specRef": "https://modelcontextprotocol.io/specification/2026-07-28/changelog",
+          "falsePositiveModes": [
+            "Reporting a pre-2026 revision is expected today, not a defect: as of this release no shipping SDK implements 2026-07-28, so almost every real server is legitimately legacy.",
+            "A server may deliberately support only older revisions for compatibility with existing clients.",
+            "'unknown' can mean the server failed to start in this environment (missing env vars, missing credentials) rather than that it speaks no known protocol."
+          ],
+          "remediation": "Track the 2026-07-28 revision when your SDK supports it: implement server/discover, validate the required _meta keys per request, and emit resultType on every result."
+        }
+      ],
+      "elapsedMs": 0
+    },
+    {
+      "ruleId": "C1_DISCOVER",
+      "status": "skip",
+      "skipReason": "applies to modern servers; this one is legacy",
+      "findings": []
+    },
+    {
+      "ruleId": "C2_TOOLS_HYGIENE",
+      "status": "pass",
+      "findings": [],
+      "elapsedMs": 1
+    },
+    {
+      "ruleId": "C3_META_VALIDATION",
+      "status": "skip",
+      "skipReason": "applies to modern servers; this one is legacy",
+      "findings": []
+    },
+    {
+      "ruleId": "C4_UNKNOWN_METHOD",
+      "status": "pass",
+      "findings": [],
+      "elapsedMs": 0
+    },
+    {
+      "ruleId": "C5_BOUNDED_TIME",
+      "status": "pass",
+      "findings": [],
+      "elapsedMs": 0
+    },
+    {
+      "ruleId": "C6_RESULT_SHAPE",
+      "status": "pass",
+      "findings": [],
+      "elapsedMs": 1
+    },
+    {
+      "ruleId": "C7_HTTP_HEADERS",
+      "status": "skip",
+      "skipReason": "applies to modern servers; this one is legacy",
+      "findings": []
+    },
+    {
+      "ruleId": "C8_LEGACY_PREINIT",
+      "status": "fail",
+      "findings": [
+        {
+          "id": "C8_ANSWERS_BEFORE_INITIALIZE",
+          "ruleId": "C8_LEGACY_PREINIT",
+          "lane": "conformance",
+          "severity": "warn",
+          "title": "Server answered tools/list before any initialize handshake",
+          "detail": "On a fresh connection, with no initialize sent, this server returned a full tools/list. A client that supports both eras can therefore get a legacy-semantics answer while believing it negotiated a modern version. Probing with server/discover first turns this ambiguity into a deterministic failure.",
+          "evidence": {
+            "path": "tools/list (before initialize)"
+          },
+          "specRef": "https://modelcontextprotocol.io/specification/2026-07-28/basic/transports/stdio#backward-compatibility",
+          "falsePositiveModes": [
+            "Answering before initialize is not forbidden by the older revisions — it is a robustness and version-negotiation hazard, not a specification violation, and is reported as such.",
+            "The official @modelcontextprotocol/server-everything behaves this way, so seeing it does not imply an unusual or untrustworthy server."
+          ],
+          "remediation": "Reject requests that arrive before a successful initialize handshake, or migrate to 2026-07-28 where every request carries its own protocol version."
+        }
+      ],
+      "elapsedMs": 89
+    },
+    {
+      "ruleId": "S1_TOOL_POISONING",
+      "status": "pass",
+      "findings": [],
+      "elapsedMs": 1
+    },
+    {
+      "ruleId": "S2_DESTRUCTIVE_ANNOTATION",
+      "status": "pass",
+      "findings": [],
+      "elapsedMs": 3
+    },
+    {
+      "ruleId": "S3_CREDENTIAL_EXPOSURE",
+      "status": "pass",
+      "findings": [],
+      "elapsedMs": 1
+    },
+    {
+      "ruleId": "S4_SCHEMA_EGRESS_DOS",
+      "status": "pass",
+      "findings": [],
+      "elapsedMs": 0
+    },
+    {
+      "ruleId": "S5_CROSS_SERVER_SHADOWING",
+      "status": "skip",
+      "skipReason": "needs more than one target; pass several servers in one run",
+      "findings": [],
+      "elapsedMs": 0
+    },
+    {
+      "ruleId": "S6_CONTROL_SEQUENCES",
+      "status": "pass",
+      "findings": [],
+      "elapsedMs": 1
+    },
+    {
+      "ruleId": "S7_ICON_URI",
+      "status": "pass",
+      "findings": [],
+      "elapsedMs": 0
+    }
+  ],
+  "findings": [
+    {
+      "id": "C0_PRE_2026_PROTOCOL",
+      "ruleId": "C0_PROTOCOL_ERA",
+      "lane": "conformance",
+      "severity": "info",
+      "title": "Server speaks a pre-2026 revision (2025-11-25)",
+      "detail": "This server answered server/discover with an error and completed an initialize handshake at 2025-11-25. The current revision is 2026-07-28, which removed the handshake entirely. Conformance checks specific to the stateless protocol were skipped for this server.",
+      "evidence": {
+        "path": "initialize"
+      },
+      "specRef": "https://modelcontextprotocol.io/specification/2026-07-28/changelog",
+      "falsePositiveModes": [
+        "Reporting a pre-2026 revision is expected today, not a defect: as of this release no shipping SDK implements 2026-07-28, so almost every real server is legitimately legacy.",
+        "A server may deliberately support only older revisions for compatibility with existing clients.",
+        "'unknown' can mean the server failed to start in this environment (missing env vars, missing credentials) rather than that it speaks no known protocol."
+      ],
+      "remediation": "Track the 2026-07-28 revision when your SDK supports it: implement server/discover, validate the required _meta keys per request, and emit resultType on every result."
+    },
+    {
+      "id": "C8_ANSWERS_BEFORE_INITIALIZE",
+      "ruleId": "C8_LEGACY_PREINIT",
+      "lane": "conformance",
+      "severity": "warn",
+      "title": "Server answered tools/list before any initialize handshake",
+      "detail": "On a fresh connection, with no initialize sent, this server returned a full tools/list. A client that supports both eras can therefore get a legacy-semantics answer while believing it negotiated a modern version. Probing with server/discover first turns this ambiguity into a deterministic failure.",
+      "evidence": {
+        "path": "tools/list (before initialize)"
+      },
+      "specRef": "https://modelcontextprotocol.io/specification/2026-07-28/basic/transports/stdio#backward-compatibility",
+      "falsePositiveModes": [
+        "Answering before initialize is not forbidden by the older revisions — it is a robustness and version-negotiation hazard, not a specification violation, and is reported as such.",
+        "The official @modelcontextprotocol/server-everything behaves this way, so seeing it does not imply an unusual or untrustworthy server."
+      ],
+      "remediation": "Reject requests that arrive before a successful initialize handshake, or migrate to 2026-07-28 where every request carries its own protocol version."
+    }
+  ],
+  "summary": {
+    "total": 2,
+    "bySeverity": {
+      "info": 1,
+      "low": 0,
+      "warn": 1,
+      "error": 0
+    },
+    "byLane": {
+      "conformance": 2,
+      "safety": 0
+    },
+    "passed": 10,
+    "failed": 2,
+    "skipped": 4,
+    "errored": 0
+  }
+}

@@ -1,7 +1,7 @@
 # masterplan.md — mcpaudit
 # From empty repo to a published, credible MCP conformance + safety linter
 
-> **Current sprint: Sprint 6** (move this pointer at every close) · Sprints 0–5 closed 2026-08-14
+> **Current sprint: Sprint 7** (move this pointer at every close) · Sprints 0–6 closed 2026-08-14
 >
 > Status: `[ ]` not started · `[~]` in progress · `[x]` done · `[⏭]` deferred (+reason)
 >
@@ -320,14 +320,20 @@ Per-tool hash covers `{name,title,description,inputSchema,annotations}` (canonic
 ## Sprint 6 — The demo: audit real servers (the distribution hook)
 **TL;DR: without a findings table on real servers, the repo is an empty tool.**
 
-- [ ] Audit 3–5 well-known PUBLIC MCP servers (reference servers + a couple of popular community ones)
-- [ ] Produce the README findings table: server × conformance summary × notable safety findings
-- [ ] **If any finding is genuinely serious → STOP, do not publish it. Trigger Sprint 8 disclosure first.** In the table, describe it generically ("one audited server exposed credentials in error output") until patched.
-- [ ] Commit raw `--json` outputs for each audited server (auditable, not just summarized)
-- [ ] Sanity: hand-review every finding; a false positive in the launch table is a credibility hit
+- [x] Audit 3–5 well-known PUBLIC MCP servers (reference servers + a couple of popular community ones)
+- [x] Produce the README findings table: server × conformance summary × notable safety findings
+- [x] **If any finding is genuinely serious → STOP, do not publish it. Trigger Sprint 8 disclosure first.** In the table, describe it generically ("one audited server exposed credentials in error output") until patched.
+- [x] Commit raw `--json` outputs for each audited server (auditable, not just summarized)
+- [x] Sanity: hand-review every finding; a false positive in the launch table is a credibility hit
 
 **Acceptance:** 3–5 servers audited, table drafted, raw outputs committed, every finding human-verified, disclosure triggered for anything serious.
-**As-shipped delta:** · **Deferred:**
+**As-shipped delta:** ✅ **PASSED** (2026-08-14). **4 official reference servers audited**, raw `--json` committed to `audits/`, README table drafted above the fold, 93 tests green.
+- Audited: `server-everything@2026.7.4`, `server-filesystem@2026.7.10`, `server-memory@2026.7.4`, `server-sequential-thinking@2026.7.4`. All four are **2025-11-25**, confirming the Phase-1 finding at ecosystem scale.
+- **The hand-review requirement earned its place — it caught 4 false positives before publication.** The first run flagged `list_directory`, `list_directory_with_sizes`, `directory_tree` and `sequentialthinking` as "destructive but claiming readOnly" at **error** severity. Root cause: `matchedVerbs` used `\b<verb>` with no *trailing* boundary, so **"clearly"** matched the verb `clear` and "formatted" matched `format`. Two fixes: require a trailing boundary with inflections (`\b<verb>(?:s|es|d|ed|ing)?\b`), and restrict weak verbs to the tool *name* — prose is too noisy to carry that signal. **Regression tests now pin those exact strings.** Publishing that table would have been a direct hit to the project's credibility.
+- Post-fix, every remaining finding was **manually re-verified against the live servers**: filesystem really does return 14 tools with no `initialize` sent; the sequential-thinking description really is 2781 characters.
+- **No disclosure triggered** — nothing exploitable was found, so Sprint 8 was not activated. The README says so explicitly rather than implying restraint where none was needed.
+- Pulled forward from Sprint 7: `RULES.md` is now **generated** from rule metadata (`npm run rules:gen`, 426 lines, 17 rules) and the README is written.
+**Deferred:** auditing popular *community* servers — most need credentials or network services to start, which makes them poor launch-table material; the official reference set is verifiable by anyone.
 
 ---
 

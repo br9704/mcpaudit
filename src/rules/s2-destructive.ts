@@ -66,9 +66,16 @@ const MUTATING = [
   "patch", "send", "post", "upload", "publish", "execute", "run", "install",
 ];
 
+/**
+ * Match a verb and its ordinary inflections, but nothing that merely starts
+ * with it. Without the trailing boundary, `clear` matches "clearly" and
+ * `format` matches "formatted" — which produced four false positives against
+ * the official filesystem server ("Results clearly distinguish…") before this
+ * was tightened.
+ */
 function matchedVerbs(haystack: string, verbs: readonly string[]): string[] {
   const lower = haystack.toLowerCase();
-  return verbs.filter((v) => new RegExp(`\\b${v}`, "i").test(lower));
+  return verbs.filter((v) => new RegExp(`\\b${v}(?:s|es|d|ed|ing)?\\b`, "i").test(lower));
 }
 
 export const rule: Rule = {
@@ -92,10 +99,10 @@ export const rule: Rule = {
         ...matchedVerbs(spacedName, STRONG_DESTRUCTIVE),
         ...matchedVerbs(description, STRONG_DESTRUCTIVE),
       ];
-      const weak = [
-        ...matchedVerbs(spacedName, WEAK_DESTRUCTIVE),
-        ...matchedVerbs(description, WEAK_DESTRUCTIVE),
-      ];
+      // Weak verbs count only in the tool *name*. In prose they are far too
+      // common to mean anything — a description saying "clear results" or
+      // "reset the view" is not evidence about what the tool does.
+      const weak = matchedVerbs(spacedName, WEAK_DESTRUCTIVE);
       const actsOnState = STATEFUL_OBJECT.test(spacedName) || STATEFUL_OBJECT.test(description);
 
       const nameVerbs = matchedVerbs(spacedName, DESTRUCTIVE);

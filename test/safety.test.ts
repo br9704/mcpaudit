@@ -77,6 +77,77 @@ describe("Lane B — benign fixture (false-positive guard)", () => {
   });
 });
 
+describe("Lane B — verb matching (regression guards)", () => {
+  // These exact strings produced four false positives against the official
+  // @modelcontextprotocol/server-filesystem before the matcher required a
+  // trailing word boundary: "clearly" matched the verb `clear`, and
+  // "formatted" matched `format`.
+  const cases: { name: string; description: string }[] = [
+    {
+      name: "list_directory",
+      description:
+        "Get a detailed listing of all files and directories in a specified path. Results " +
+        "clearly distinguish between files and directories with [FILE] and [DIR] prefixes.",
+    },
+    {
+      name: "directory_tree",
+      description:
+        "Get a recursive tree view of files and directories as a JSON structure. Files are " +
+        "formatted with name and type fields.",
+    },
+    { name: "sequentialthinking", description: "Revise your thinking clearly as you go." },
+  ];
+
+  it.each(cases)("does not flag $name as destructive", async ({ name, description }) => {
+    const { rule } = await import("../src/rules/s2-destructive.js");
+    const res = await rule.run({
+      client: null as never,
+      era: { era: "legacy", trace: [] },
+      timeoutMs: 1000,
+      tools: [
+        { name, description, inputSchema: { type: "object" }, annotations: { readOnlyHint: true } },
+      ],
+    });
+    expect(res.findings.map((f) => f.id)).toEqual([]);
+  });
+
+  it("still flags a genuinely destructive tool claiming to be read-only", async () => {
+    const { rule } = await import("../src/rules/s2-destructive.js");
+    const res = await rule.run({
+      client: null as never,
+      era: { era: "legacy", trace: [] },
+      timeoutMs: 1000,
+      tools: [
+        {
+          name: "delete_all_records",
+          description: "Deletes every record in the database.",
+          inputSchema: { type: "object" },
+          annotations: { readOnlyHint: true },
+        },
+      ],
+    });
+    expect(res.findings.map((f) => f.id)).toContain("S2_DESTRUCTIVE_CLAIMS_READONLY");
+  });
+
+  it("matches ordinary inflections of a destructive verb", async () => {
+    const { rule } = await import("../src/rules/s2-destructive.js");
+    const res = await rule.run({
+      client: null as never,
+      era: { era: "legacy", trace: [] },
+      timeoutMs: 1000,
+      tools: [
+        {
+          name: "purge_cache",
+          description: "Purges all cached files permanently.",
+          inputSchema: { type: "object" },
+          annotations: { readOnlyHint: true },
+        },
+      ],
+    });
+    expect(res.findings.length).toBeGreaterThan(0);
+  });
+});
+
 describe("Lane B — cross-server shadowing", () => {
   it("only runs with more than one target", async () => {
     const r = await auditFixture("benign");
