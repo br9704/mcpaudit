@@ -19,44 +19,54 @@ export const EXIT_OK = 0;
 export const EXIT_FINDINGS = 1;
 export const EXIT_ERROR = 2;
 
-function helpText(): string {
-  return `${DISPLAY_NAME} v${VERSION} — ${TAGLINE}
+/**
+ * The CLI's own surface is part of the pitch, so `--help` is styled with the
+ * same inherited ccline design system as the report: ANSI-16 by index, bold as
+ * the only emphasis, and a clean collapse to plain monospace off-TTY.
+ */
+function helpText(theme: Theme): string {
+  const h = (s: string) => theme.bold(s); // section headings
+  const f = (s: string) => theme.paint(14, s); // flags, matching the brand accent
+  const d = (s: string) => theme.dim(s); // secondary text
 
-  ${FRAMING}
+  return `${theme.paint(14, theme.bold(DISPLAY_NAME))} ${d(`v${VERSION}`)} — ${TAGLINE}
 
-USAGE
-  ${BIN_NAME} [options] <target...> [-- <server args>]
+  ${d(FRAMING)}
 
-  <target>  a URL           → Streamable HTTP transport
-            a command       → stdio transport (e.g. "npx -y @scope/server")
+${h("USAGE")}
+  ${f(BIN_NAME)} [options] <target...> [-- <server args>]
 
-OPTIONS
-  --json                  machine-readable report on stdout
-  --sarif                 SARIF 2.1.0 report (GitHub code scanning)
-  --fail-on <level>       exit 1 at or above this severity
-                          info|low|warn|error            (default: warn)
-  --pin[=<path>]          write a baseline snapshot      (default: .mcpaudit-baseline.json)
-  --baseline <path>       diff against a baseline; drift is a finding
-  --timeout <ms>          per-request timeout            (default: 10000)
-  --color / --no-color    force or disable ANSI colour   (NO_COLOR respected)
-  --icons <mode>          auto|plain|nerd|none           (default: auto)
-  -h, --help              show this help
-  -v, --version           show version
+  <target>  ${d("a URL")}           → Streamable HTTP transport
+            ${d("a command")}       → stdio transport ${d('(e.g. "npx -y @scope/server")')}
 
-EXIT CODES
-  0  clean
-  1  findings at or above --fail-on
-  2  tool or connection error
+${h("OPTIONS")}
+  ${f("--json")}                  machine-readable report on stdout
+  ${f("--sarif")}                 SARIF 2.1.0 report ${d("(GitHub code scanning)")}
+  ${f("--fail-on <level>")}       exit 1 at or above this severity
+                          ${d("info|warn|low|error            (default: warn)")}
+  ${f("--pin[=<path>]")}          write a baseline snapshot      ${d("(default: .mcpaudit-baseline.json)")}
+  ${f("--baseline <path>")}       diff against a baseline; drift is a finding
+  ${f("--timeout <ms>")}          per-request timeout            ${d("(default: 10000)")}
+  ${f("--color")} / ${f("--no-color")}    force or disable ANSI colour   ${d("(NO_COLOR respected)")}
+  ${f("--icons <mode>")}          auto|plain|nerd|none           ${d("(default: auto)")}
+  ${f("-h, --help")}              show this help
+  ${f("-v, --version")}           show version
 
-EXAMPLES
-  ${BIN_NAME} "npx -y @modelcontextprotocol/server-everything"
-  ${BIN_NAME} https://example.com/mcp --sarif > mcp.sarif
-  ${BIN_NAME} "npx -y my-server" --pin
-  ${BIN_NAME} "npx -y my-server" --baseline .mcpaudit-baseline.json
+${h("EXIT CODES")}
+  ${theme.paint(10, "0")}  clean
+  ${theme.paint(11, "1")}  findings at or above --fail-on
+  ${theme.paint(9, "2")}  tool or connection error
 
-  ${REPO_URL}
+${h("EXAMPLES")}
+  ${d(`${BIN_NAME} "npx -y @modelcontextprotocol/server-everything"`)}
+  ${d(`${BIN_NAME} https://example.com/mcp --sarif > mcp.sarif`)}
+  ${d(`${BIN_NAME} "npx -y my-server" --pin`)}
+  ${d(`${BIN_NAME} "npx -y my-server" --baseline .mcpaudit-baseline.json`)}
+
+  ${d(REPO_URL)}
 `;
 }
+
 
 export async function main(argv: readonly string[]): Promise<number> {
   let args;
@@ -71,7 +81,7 @@ export async function main(argv: readonly string[]): Promise<number> {
   }
 
   if (args.help) {
-    process.stdout.write(helpText());
+    process.stdout.write(helpText(Theme.resolve({ color: args.color, icons: args.icons })));
     return EXIT_OK;
   }
 

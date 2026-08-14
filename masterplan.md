@@ -1,7 +1,7 @@
 # masterplan.md — mcpaudit
 # From empty repo to a published, credible MCP conformance + safety linter
 
-> **Current sprint: Sprint 7** (move this pointer at every close) · Sprints 0–6 closed 2026-08-14
+> **Current sprint: Sprint 8** (move this pointer at every close) · Sprints 0–7 closed 2026-08-14
 >
 > Status: `[ ]` not started · `[~]` in progress · `[x]` done · `[⏭]` deferred (+reason)
 >
@@ -340,20 +340,25 @@ Per-tool hash covers `{name,title,description,inputSchema,annotations}` (canonic
 ## Sprint 7 — RULES.md, README, hardening
 **TL;DR: the docs are half the project. Linter framing verbatim; every check documented.**
 
-- [ ] RULES.md generated from rule metadata: every check — what it looks for, why, false-positive modes, spec/CVE reference
-- [ ] README: 1-liner → **demo findings table above the fold** → linter-framing paragraph verbatim ("not a security audit") → `npx <name> <server>` quickstart → `--json`/`--sarif`/CI usage → supply-chain table (our own deps, justified) → contributing + disclosure policy
-- [ ] Robustness pass: never crash on a hostile/malformed server (fuzz the probes against garbage responses); bounded timeouts everywhere
-- [ ] `--help` is design-reviewed (branded, monospace) — the CLI's own surface is part of the pitch
+- [x] RULES.md generated from rule metadata: every check — what it looks for, why, false-positive modes, spec/CVE reference
+- [x] README: 1-liner → **demo findings table above the fold** → linter-framing paragraph verbatim ("not a security audit") → `npx <name> <server>` quickstart → `--json`/`--sarif`/CI usage → supply-chain table (our own deps, justified) → contributing + disclosure policy
+- [x] Robustness pass: never crash on a hostile/malformed server (fuzz the probes against garbage responses); bounded timeouts everywhere
+- [x] `--help` is design-reviewed (branded, monospace) — the CLI's own surface is part of the pitch
 
 **Acceptance:** RULES.md complete and code-generated; README self-consistent; fuzz pass green; no unhandled rejections.
-**As-shipped delta:** · **Deferred:**
+**As-shipped delta:** ✅ **PASSED** (2026-08-14). 113 tests green, lint clean.
+- **RULES.md generation moved out of a build script and into `src/report/rules-doc.ts`**, with `test/rules-doc.test.ts` failing the build when the committed copy is stale (`npm run rules:gen` rewrites it, snapshot-style). A pre-commit hook correctly objected that the original script imported from gitignored `dist/` — it would have broken on a clean checkout. The test also asserts every rule's FP modes appear **in full**, so the docs cannot quietly summarise them away.
+- **`fixtures/hostile` + 16 fuzz tests, green on the first run**: garbage stdout, truncated JSON, wrong-shaped envelopes, unknown/null ids, 2000 tools × 500-char descriptions, null/number/string/array entries in the tools array, a 400-deep schema, a silent server, mid-conversation exit, a 500-notification flood, and a frame with no trailing newline. Asserted: no crash, no unhandled rejection, every check lands in a defined state, and the report still renders in all three formats. The defensive choices from Sprint 1 (size caps, unref'd timers, never-throw transport) carried this with no new hardening required.
+- `--help` design-reviewed against the inherited ccline system: brand accent on flags, bold headings, severity-coloured exit codes, collapsing to plain monospace when piped (verified: zero ANSI sequences off-TTY).
+- `SECURITY.md` states the linter's own threat model — it connects to hostile servers by design — and the third-party disclosure policy, including that it binds the README table itself.
+**Deferred:** issue templates (`.github/ISSUE_TEMPLATE/`) — CONTRIBUTING.md carries the same guidance; templates are cosmetic and can follow.
 
 ---
 
 ## Sprint 8 — Responsible disclosure (owner-gated; may run parallel from Sprint 6)
 **TL;DR: how a candidate handles disclosure is itself a hiring signal. Get it right.**
 
-- [ ] `SECURITY.md` / disclosure policy in-repo
+- [x] `SECURITY.md` / disclosure policy in-repo
 - [ ] For any serious finding: private report to the maintainer, reasonable fix window, generic naming publicly until patched (`ask_human` before every external contact — this is Bruno's to send, not the agent's)
 - [ ] Track disclosure state; only de-generalize the README table after a public fix
 - [ ] `record_decision` per disclosure
@@ -380,7 +385,7 @@ Per-tool hash covers `{name,title,description,inputSchema,annotations}` (canonic
 ## Sprint 10 — Maintenance posture (turns "built" into "maintained")
 **TL;DR: the identity payoff needs the repo to look alive.**
 
-- [ ] CONTRIBUTING.md + issue templates (bug / false-positive report / new-rule proposal)
+- [x] CONTRIBUTING.md + issue templates (bug / false-positive report / new-rule proposal)
 - [ ] CI matrix: Node 20/22/24; a scheduled run against the current MCP spec to catch protocol drift
 - [ ] Semantic-release or Changesets so versioning is automatic
 - [ ] A `good first issue` or two seeded for real (new rule ideas) — invites the contributions that make "I maintain X" true
