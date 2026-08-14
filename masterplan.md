@@ -1,7 +1,7 @@
 # masterplan.md — mcpaudit
 # From empty repo to a published, credible MCP conformance + safety linter
 
-> **Current sprint: Sprint 4** (move this pointer at every close) · Sprints 0–3 closed 2026-08-14
+> **Current sprint: Sprint 5** (move this pointer at every close) · Sprints 0–4 closed 2026-08-14
 >
 > Status: `[ ]` not started · `[~]` in progress · `[x]` done · `[⏭]` deferred (+reason)
 >
@@ -243,13 +243,13 @@ Every check declares `appliesTo`. Checks that don't apply are **skipped with a r
 
 Each check cites its primary source in RULES.md and states its false-positive modes.
 
-- [ ] S1 **Tool poisoning / injection surface** (Invariant Labs, Apr 2025): imperative/injection phrases in `description`/`instructions`/`server/discover.instructions` ("ignore previous", "you must", "do not tell the user", `<IMPORTANT>`), hidden HTML, zero-width/homoglyph chars, abnormally long descriptions. FP modes: legit tools that describe instructions to the user.
-- [ ] S2 **Destructive tool without confirmation semantics**: write/delete verbs in name/description with `destructiveHint` unset/false and no irreversibility note. (Remember: annotations are spec-untrusted — flag mismatch, don't trust the hint.)
-- [ ] S3 **Credential exposure**: secrets/tokens/keys in tool schemas, default values, or error/log output; probe a malformed call and scan the error for credential-shaped strings.
-- [ ] S4 **Over-broad / undeclared egress signal**: static hints of network calls to hosts never mentioned; `$ref` in schemas pointing at network URLs (also a DoS vector); OAuth metadata URLs pointing at link-local/RFC-1918/loopback (SSRF).
-- [ ] S5 **Cross-server shadowing** (multi-target mode): duplicate/overlapping tool names across configured servers; a description referencing another server's tools.
-- [ ] S6 **ANSI/control-char injection** in tool descriptions or output (ToB): terminal escape sequences.
-- [ ] Map every safety finding to **OWASP MCP Top 10** + **CWE** where applicable (credibility, and almost nobody does it).
+- [x] S1 **Tool poisoning / injection surface** (Invariant Labs, Apr 2025): imperative/injection phrases in `description`/`instructions`/`server/discover.instructions` ("ignore previous", "you must", "do not tell the user", `<IMPORTANT>`), hidden HTML, zero-width/homoglyph chars, abnormally long descriptions. FP modes: legit tools that describe instructions to the user.
+- [x] S2 **Destructive tool without confirmation semantics**: write/delete verbs in name/description with `destructiveHint` unset/false and no irreversibility note. (Remember: annotations are spec-untrusted — flag mismatch, don't trust the hint.)
+- [x] S3 **Credential exposure**: secrets/tokens/keys in tool schemas, default values, or error/log output; probe a malformed call and scan the error for credential-shaped strings.
+- [x] S4 **Over-broad / undeclared egress signal**: static hints of network calls to hosts never mentioned; `$ref` in schemas pointing at network URLs (also a DoS vector); OAuth metadata URLs pointing at link-local/RFC-1918/loopback (SSRF).
+- [x] S5 **Cross-server shadowing** (multi-target mode): duplicate/overlapping tool names across configured servers; a description referencing another server's tools.
+- [x] S6 **ANSI/control-char injection** in tool descriptions or output (ToB): terminal escape sequences.
+- [x] Map every safety finding to **OWASP MCP Top 10** + **CWE** where applicable (credibility, and almost nobody does it).
 
 ### 4.1 Detection specifics (expanded session 1)
 - **S1 poisoning signals:** phrase set (`ignore previous`, `disregard`, `you must`, `do not tell`, `do not mention`, `before using any other tool`, `<IMPORTANT>`, `<SECRET>`), HTML comments `<!--`, zero-width chars `U+200B-200D/U+FEFF/U+2060`, bidi overrides `U+202A-202E`, Cyrillic/Greek homoglyphs mixed into ASCII words, description length > 2000 chars. Scans `tool.description`, `tool.title`, `prompt.description`, and `instructions` (from `server/discover` or `initialize`).
@@ -266,7 +266,16 @@ Mapping: every safety finding carries `owaspMcp` + `cwe` (e.g. S1→CWE-77/OWASP
 `fixtures/malicious/` — one server exposing a tool per attack class, so each rule has a positive fixture, plus a `fixtures/benign/` server whose descriptions legitimately contain instruction-like prose (guards the documented false-positive modes).
 
 **Acceptance:** 5+ safety checks with malicious fixtures; each documented in RULES.md with FP modes; OWASP/CWE mapping present.
-**As-shipped delta:** · **Deferred:**
+**As-shipped delta:** ✅ **PASSED** (2026-08-14). **7 safety rules shipped** (S1–S7), 79 tests green. Every rule carries CWE + OWASP-MCP mapping, enforced by test.
+- `fixtures/malicious` plants one attack per class and yields **19 safety findings**; `fixtures/shadow` covers S5 (duplicate name + foreign-tool reference across two targets).
+- **`fixtures/benign` is the load-bearing test and it earned its keep.** It is written the way real servers are written — instructional prose, a credential-named parameter with no value, a placeholder default, a UUID, a destructive tool with *honest* annotations, `remove_background`, a local `` ref, a ZWJ family emoji, a `data:` icon. First run produced **2 false positives**, both of which were FP modes I had *documented but not implemented*:
+  1. `S1_HIDDEN_CHARACTERS` fired on 👨‍👩‍👧 — the zero-width joiners that build an emoji sequence. Fixed: a ZWJ between two Extended_Pictographic characters is legitimate.
+  2. `S2_DESTRUCTIVE_CLAIMS_READONLY` fired on `remove_background`. Fixed with a two-tier verb model: strong verbs (delete/drop/purge/wipe…) count alone; weak verbs (remove/reset/clear…) count only when paired with a stateful object (file, record, database, account…). Benign is now **0 findings**.
+- **Novel checks nothing else can have** (the spec is weeks old): `S3_SENSITIVE_X_MCP_HEADER` — a secret marked `x-mcp-header` is mirrored into an HTTP header visible to every proxy, which the spec explicitly warns against — and `S7_ICON_URI` (`javascript:`/`file:` icon schemes the spec says clients MUST reject).
+- **Bug caught by an absent finding:** `S6_CONTROL_IN_OUTPUT` scanned `res.raw`, but on the wire an ESC byte is already JSON-escaped as `\u001b`, so it could never match. Now scans decoded `content[].text`.
+- A test asserts the report itself never contains raw ANSI or zero-width characters — a server flagged for injection must not be able to inject into the report flagging it.
+- **Real-world check:** the full 16-rule audit against `@modelcontextprotocol/server-everything` yields **2 findings and zero safety false positives**, with 10 checks actively passing and 4 correctly skipped.
+**Deferred:** token-passthrough / OAuth-metadata SSRF (S8) — needs a live 2026-07-28 HTTP server with auth to test against; none exists. Added to backlog: a rule for tools that expose environment variables wholesale (the reference server's `get-env` is exactly this shape, but the heuristic needs care before shipping).
 
 ---
 
@@ -368,6 +377,8 @@ Per-tool hash covers `{name,title,description,inputSchema,annotations}` (canonic
 ---
 
 ## Backlog (post-v1)
+- **Env-dump tools:** flag tools that return the whole environment (the official everything server ships `get-env`, "Returns all environment variables"). Real credential-exposure surface, but the heuristic needs care not to fire on legitimate debug tooling.
+- **S8 token passthrough / OAuth metadata SSRF** — deferred from Sprint 4 for lack of any live 2026-07-28 auth server to test against.
 - Dynamic behavioral checks in a sandbox (explicitly non-goal for v1)
 - Config-file scanning (Claude Desktop/Cursor/VS Code) like Snyk agent-scan does
 - Reuse `@modelcontextprotocol/conformance`'s wire-schema-validation as an embedded conformance oracle

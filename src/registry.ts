@@ -13,11 +13,17 @@ import { rule as c3 } from "./probe/c3-meta-validation.js";
 import { c4, c5, c6 } from "./probe/c4-c5-c6.js";
 import { c7, c8 } from "./probe/c7-c8.js";
 
+import { rule as s1 } from "./rules/s1-tool-poisoning.js";
+import { rule as s2 } from "./rules/s2-destructive.js";
+import { rule as s3 } from "./rules/s3-credentials.js";
+import { rule as s4 } from "./rules/s4-schema-egress.js";
+import { s5, s6, s7 } from "./rules/s5-s6-s7.js";
+
 /** Lane A — conformance. */
 export const CONFORMANCE_RULES: readonly Rule[] = [c0, c1, c2, c3, c4, c5, c6, c7, c8];
 
 /** Lane B — safety. */
-export const SAFETY_RULES: readonly Rule[] = [];
+export const SAFETY_RULES: readonly Rule[] = [s1, s2, s3, s4, s5, s6, s7];
 
 export const ALL_RULES: readonly Rule[] = [...CONFORMANCE_RULES, ...SAFETY_RULES];
 
