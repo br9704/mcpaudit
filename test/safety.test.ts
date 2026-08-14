@@ -60,8 +60,8 @@ describe("Lane B — malicious fixture", () => {
     const blob = JSON.stringify(r);
     // A server flagged for ANSI injection must not be able to inject ANSI into
     // the report doing the flagging.
-    expect(blob).not.toMatch(/\[/);
-    expect(blob).not.toMatch(/​/);
+    expect(blob).not.toContain(String.fromCharCode(0x1b)); // ESC
+    expect(blob).not.toContain(String.fromCharCode(0x200b)); // ZERO WIDTH SPACE
   });
 });
 
