@@ -1,7 +1,7 @@
 # masterplan.md — mcpaudit
 # From empty repo to a published, credible MCP conformance + safety linter
 
-> **Current sprint: Sprint 5** (move this pointer at every close) · Sprints 0–4 closed 2026-08-14
+> **Current sprint: Sprint 6** (move this pointer at every close) · Sprints 0–5 closed 2026-08-14
 >
 > Status: `[ ]` not started · `[~]` in progress · `[x]` done · `[⏭]` deferred (+reason)
 >
@@ -282,10 +282,10 @@ Mapping: every safety finding carries `owaspMcp` + `cwe` (e.g. S1→CWE-77/OWASP
 ## Sprint 5 — Rug-pull / drift detection (the standout feature)
 **TL;DR: pin the server's surface; diff on re-audit; drift = alert. Only runtime wrappers do this today.**
 
-- [ ] `pin/baseline.ts`: hash `{name, title, description, inputSchema, annotations}` per tool → `.mcpaudit-baseline.json`
-- [ ] `pin/diff.ts`: `--baseline <file>` re-audit → report any tool whose surface changed since pin (semantic diff, not just hash — show old→new)
-- [ ] `--pin` writes/updates the baseline; drift emits a high-severity Finding (this is how silent tool-redefinition / rug pulls surface)
-- [ ] `record_decision`: baseline format (CONTRACT via declare_contract)
+- [x] `pin/baseline.ts`: hash `{name, title, description, inputSchema, annotations}` per tool → `.mcpaudit-baseline.json`
+- [x] `pin/diff.ts`: `--baseline <file>` re-audit → report any tool whose surface changed since pin (semantic diff, not just hash — show old→new)
+- [x] `--pin` writes/updates the baseline; drift emits a high-severity Finding (this is how silent tool-redefinition / rug pulls surface)
+- [x] `record_decision`: baseline format (CONTRACT via declare_contract)
 
 ### 5.1 Baseline format (CONTRACT, expanded session 1)
 ```jsonc
@@ -305,7 +305,15 @@ Per-tool hash covers `{name,title,description,inputSchema,annotations}` (canonic
 `--pin [path]` writes/updates (default `.mcpaudit-baseline.json`). `--baseline <path>` compares and emits: `TOOL_ADDED` (info) · `TOOL_REMOVED` (warn) · `TOOL_DESCRIPTION_CHANGED` (**error** — the classic rug pull) · `TOOL_SCHEMA_CHANGED` (error) · `TOOL_ANNOTATIONS_CHANGED` (error if it relaxes a safety claim, e.g. `destructiveHint` true→false) · `INSTRUCTIONS_CHANGED` (warn). Diff renders old→new inline, truncated, with control chars escaped so a malicious diff can't corrupt the terminal.
 
 **Acceptance:** pin a fixture server, mutate a tool description, re-audit → drift finding with a readable diff.
-**As-shipped delta:** · **Deferred:**
+**As-shipped delta:** ✅ **PASSED** (2026-08-14). 88 tests green. Demonstrated end-to-end: pinned the benign fixture, rewrote one description and flipped one annotation, re-audited → both caught with old→new diffs rendered inline.
+- **Canonical JSON (sorted keys, no whitespace) before hashing.** Without it a server that merely reordered its JSON keys would look like a rug pull on every re-audit; tested explicitly.
+- Field-level hashes alongside the whole-tool hash, so the diff names *which* field moved rather than just "changed".
+- `D1_ANNOTATIONS_RELAXED` is the sharpest signal in the tool: it fires only when a change *weakens* a safety claim (`readOnlyHint`→true, `destructiveHint`→false, `openWorldHint`→true), which is the shape of a deliberate downgrade rather than an ordinary release edit.
+- Drift deliberately lives **outside the rule registry**: it needs a caller-supplied baseline and must still run when the era is `unknown`.
+- `D1_BASELINE_TARGET_MISMATCH` warns when a baseline was captured against a different target, so a mis-pointed `--baseline` cannot masquerade as mass drift.
+- Severity is deliberate: description/inputSchema changes are `error` (they alter what the model is told); title/outputSchema are `warn`; a new tool is `info`. FP modes state plainly that drift means "changed since you approved it", not "malicious".
+- **Fixture correctness fix:** benign/shadow/reserved-code claimed 2026-07-28 but did not validate required `_meta`, so Lane A noise (3× C3) buried the drift signal in the demo. They now validate properly and are conformance-clean.
+**Deferred:** none.
 
 ---
 

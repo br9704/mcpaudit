@@ -7,6 +7,8 @@ import type { AuditReport, CheckResult } from "./schema/finding.js";
 import { summarize } from "./schema/finding.js";
 import { PKG_NAME } from "./brand.js";
 import { VERSION } from "./version.js";
+import { buildBaseline, type Baseline } from "./pin/baseline.js";
+import { diffAgainstBaseline, meta as driftMeta } from "./pin/diff.js";
 
 export interface AuditOptions {
   target: string;
@@ -15,6 +17,8 @@ export interface AuditOptions {
   rules: readonly Rule[];
   /** Tool surfaces from other targets, for the cross-server shadowing rule. */
   siblings?: { target: string; tools: RawTool[] }[];
+  /** When set, the audit diffs the live surface against this pinned baseline. */
+  baseline?: Baseline;
 }
 
 function extractTools(result: unknown): RawTool[] {
@@ -103,6 +107,23 @@ export async function audit(opts: AuditOptions): Promise<AuditReport> {
       }
     }
 
+    // Drift is not a Rule: it needs a baseline the caller supplies, and it must
+    // still run when the era is unknown, so it lives here rather than in the
+    // registry.
+    if (opts.baseline) {
+      const driftFindings = diffAgainstBaseline({
+        baseline: opts.baseline,
+        tools,
+        ...(era.instructions !== undefined ? { instructions: era.instructions } : {}),
+        targetSpec: opts.target,
+      });
+      results.push({
+        ruleId: driftMeta.id,
+        status: driftFindings.length ? "fail" : "pass",
+        findings: driftFindings,
+      });
+    }
+
     const report: AuditReport = {
       tool: { name: PKG_NAME, version: VERSION },
       startedAt,
@@ -138,6 +159,34 @@ export async function readToolSurface(
     return extractTools(res.result);
   } catch {
     return [];
+  } finally {
+    await client.close();
+  }
+}
+
+/**
+ * Connect, read the surface, and produce a baseline snapshot for `--pin`.
+ * Kept separate from `audit()` so pinning never depends on checks passing.
+ */
+export async function pin(opts: {
+  target: string;
+  passthrough?: readonly string[];
+  timeoutMs?: number;
+  now: string;
+}): Promise<Baseline> {
+  const transport = createTransport(opts.target, opts.passthrough ?? []);
+  const client = new McpClient(transport, { timeoutMs: opts.timeoutMs ?? 10_000 });
+  try {
+    const era = await detectEra(client);
+    const toolsResponse = await client.listTools();
+    return buildBaseline({
+      toolName: PKG_NAME,
+      toolVersion: VERSION,
+      target: { kind: detectTargetKind(opts.target), spec: opts.target },
+      era,
+      tools: extractTools(toolsResponse.result),
+      now: opts.now,
+    });
   } finally {
     await client.close();
   }

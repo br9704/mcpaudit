@@ -1,5 +1,6 @@
 import { PKG_NAME, REPO_URL } from "../brand.js";
 import type { AuditReport, Finding, RuleMeta, Severity } from "../schema/finding.js";
+import { meta as driftMeta } from "../pin/diff.js";
 
 /**
  * SARIF 2.1.0 output, for GitHub code scanning and any other CI that speaks it.
@@ -112,7 +113,13 @@ function resultFor(f: Finding, ruleIndex: number, targetUri: string) {
  *               advertises the full ruleset rather than only rules that fired
  */
 export function renderSarif(report: AuditReport, rules: readonly RuleMeta[]): string {
-  const sarifRules = rules.map(ruleFromMeta);
+  // Include any rule that produced a finding but is not in the registry (drift
+  // runs outside it), so every result can resolve its ruleIndex.
+  const extra = report.findings
+    .map((f) => f.ruleId)
+    .filter((id) => !rules.some((r) => r.id === id));
+  const merged = [...rules, ...(extra.includes(driftMeta.id) ? [driftMeta] : [])];
+  const sarifRules = merged.map(ruleFromMeta);
   const indexById = new Map(sarifRules.map((r, i) => [r.id, i]));
 
   // A URI is required; a stdio command is not one, so encode it safely.

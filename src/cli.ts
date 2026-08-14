@@ -4,7 +4,9 @@ import { fileURLToPath } from "node:url";
 import { BIN_NAME, DISPLAY_NAME, FRAMING, REPO_URL, TAGLINE } from "./brand.js";
 import { VERSION } from "./version.js";
 import { ArgError, parseArgs } from "./args.js";
-import { audit, readToolSurface } from "./engine.js";
+import { audit, pin, readToolSurface } from "./engine.js";
+import { readFile, writeFile } from "node:fs/promises";
+import { parseBaseline, serializeBaseline, type Baseline } from "./pin/baseline.js";
 import { ALL_RULES, ALL_RULE_META } from "./registry.js";
 import { atOrAbove, maxSeverity, type AuditReport } from "./schema/finding.js";
 import { renderTerminal } from "./report/terminal.js";
@@ -86,6 +88,42 @@ export async function main(argv: readonly string[]): Promise<number> {
   }
 
   try {
+    // --pin writes a snapshot and exits; it is a separate mode, not a report.
+    if (args.pin !== undefined) {
+      const now = new Date().toISOString();
+      for (const target of args.targets) {
+        const baseline = await pin({
+          target,
+          passthrough: args.passthrough,
+          timeoutMs: args.timeoutMs,
+          now,
+        });
+        const path =
+          args.targets.length === 1
+            ? args.pin
+            : args.pin.replace(/(\.json)?$/, `.${baseline.server.name ?? "server"}$1`);
+        await writeFile(path, serializeBaseline(baseline), "utf8");
+        process.stderr.write(
+          `${BIN_NAME}: pinned ${baseline.tools.length} tool(s) from ` +
+            `${baseline.server.name ?? target} to ${path}\n`,
+        );
+      }
+      return EXIT_OK;
+    }
+
+    let baseline: Baseline | undefined;
+    if (args.baseline !== undefined) {
+      try {
+        baseline = parseBaseline(await readFile(args.baseline, "utf8"));
+      } catch (err) {
+        process.stderr.write(
+          `${BIN_NAME}: could not read baseline ${args.baseline}: ` +
+            `${err instanceof Error ? err.message : String(err)}\n`,
+        );
+        return EXIT_ERROR;
+      }
+    }
+
     // Cross-server shadowing needs every target's tool surface, so with more
     // than one target we read the others first and hand them to each audit.
     const surfaces =
@@ -107,6 +145,7 @@ export async function main(argv: readonly string[]): Promise<number> {
           timeoutMs: args.timeoutMs,
           rules: ALL_RULES,
           siblings: surfaces.filter((s) => s.target !== target),
+          ...(baseline ? { baseline } : {}),
         }),
       );
     }

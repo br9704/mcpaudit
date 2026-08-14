@@ -24,9 +24,23 @@ const ok = (id, result) =>
   });
 const fail = (id, code, message) => write({ jsonrpc: "2.0", id, error: { code, message } });
 
-function handle({ id, method }) {
+
+const META_VERSION = "io.modelcontextprotocol/protocolVersion";
+const META_CAPS = "io.modelcontextprotocol/clientCapabilities";
+/** Required-_meta validation, so these fixtures are conformance-clean and the
+ * safety/drift signal under test is not buried in Lane A noise. */
+function validateMeta(id, params) {
+  const meta = params?._meta;
+  if (!meta || typeof meta !== "object") { fail(id, -32602, 'Invalid params: missing required "_meta"'); return false; }
+  if (typeof meta[META_VERSION] !== "string") { fail(id, -32602, 'Invalid params: missing required protocolVersion'); return false; }
+  if (typeof meta[META_CAPS] !== "object" || meta[META_CAPS] === null) { fail(id, -32602, 'Invalid params: missing required clientCapabilities'); return false; }
+  return true;
+}
+
+function handle({ id, method, params }) {
   if (id === undefined) return;
   if (method === "server/discover") {
+    if (!validateMeta(id, params)) return;
     return ok(id, {
       supportedVersions: [PROTOCOL_VERSION],
       capabilities: { tools: {} },
@@ -35,6 +49,7 @@ function handle({ id, method }) {
     });
   }
   if (method === "tools/list") {
+    if (!validateMeta(id, params)) return;
     return ok(id, {
       tools: [{ name: "solo", description: "The only tool.", inputSchema: { type: "object" } }],
       ttlMs: 300000,
