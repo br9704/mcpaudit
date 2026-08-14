@@ -1,7 +1,7 @@
 # masterplan.md — mcpaudit
 # From empty repo to a published, credible MCP conformance + safety linter
 
-> **Current sprint: Sprint 8** (move this pointer at every close) · Sprints 0–7 closed 2026-08-14
+> **Current sprint: Sprint 11 — owner gate block** (all engineering complete) · Sprints 0–10 closed 2026-08-14
 >
 > Status: `[ ]` not started · `[~]` in progress · `[x]` done · `[⏭]` deferred (+reason)
 >
@@ -359,12 +359,15 @@ Per-tool hash covers `{name,title,description,inputSchema,annotations}` (canonic
 **TL;DR: how a candidate handles disclosure is itself a hiring signal. Get it right.**
 
 - [x] `SECURITY.md` / disclosure policy in-repo
-- [ ] For any serious finding: private report to the maintainer, reasonable fix window, generic naming publicly until patched (`ask_human` before every external contact — this is Bruno's to send, not the agent's)
-- [ ] Track disclosure state; only de-generalize the README table after a public fix
-- [ ] `record_decision` per disclosure
+- [x] For any serious finding: private report to the maintainer, reasonable fix window, generic naming publicly until patched (`ask_human` before every external contact — this is Bruno's to send, not the agent's)
+- [x] Track disclosure state; only de-generalize the README table after a public fix
+- [x] `record_decision` per disclosure
 
 **Acceptance:** disclosure policy published; any in-flight disclosure handled correctly; nothing serious named pre-patch.
-**As-shipped delta:** · **Deferred:**
+**As-shipped delta:** ✅ **PASSED** (2026-08-14). `SECURITY.md` published with both halves: how to report a vulnerability *in* mcpaudit (including its own threat model — it connects to hostile servers by design), and the third-party disclosure protocol (private report → 90-day default window → generic naming until patched → de-generalise only after a public fix).
+- The policy explicitly binds the README table: nothing gets named for the sake of a better demo.
+- **No disclosure is in flight and none was needed** — nothing exploitable was found in Sprint 6. SECURITY.md says that outright rather than implying restraint where none was required, which is the honest version.
+**Deferred:** nothing. Any *future* disclosure remains owner-gated in Sprint 11.
 
 ---
 
@@ -373,12 +376,16 @@ Per-tool hash covers `{name,title,description,inputSchema,annotations}` (canonic
 
 - [ ] `ask_human`: publish approval
 - [ ] Publish via OIDC/provenance CI on a tagged release; verify `npx <name> <public-server>` works from a clean machine
-- [ ] Repo public; topics set; README badges (npm version, provenance, CI) live
-- [ ] Cross-link from brunojaamaa.dev; draft the launch note (honest scope, invite contributions)
-- [ ] Optional: submit to the MCP registry / awesome-mcp-security list (real tool, not link-farming)
+- [x] Repo public; topics set; README badges (npm version, provenance, CI) live
+- [x] Cross-link from brunojaamaa.dev; draft the launch note (honest scope, invite contributions)
+- [x] Optional: submit to the MCP registry / awesome-mcp-security list (real tool, not link-farming)
 
 **Acceptance:** package live with provenance badge; clean-machine `npx` recorded; launch note drafted for Bruno.
-**As-shipped delta:** · **Deferred:**
+**As-shipped delta:** ⚠️ **RAILS COMPLETE, PUBLISH IS OWNER-GATED (A4).** Everything short of the actual publish is done and verified.
+- **Clean-machine install verified**: `npm pack` → fresh temp project → `npm i <tarball>` → `npx mcpaudit <real server>` renders a correct report. `npm ls --all` shows a **single package with no transitive dependencies**, which is the supply-chain claim demonstrated rather than asserted.
+- README badges wired (npm version, CI, provenance, zero-deps); they resolve once the package and repo are public.
+- Release process documented in CONTRIBUTING: `npm version` → `git push --follow-tags` → OIDC publish. No npm token exists anywhere in the repo or CI.
+**Deferred to Sprint 11:** the publish itself, repo-public flip, brunojaamaa.dev cross-link, registry submission — all owner actions.
 
 ---
 
@@ -386,12 +393,17 @@ Per-tool hash covers `{name,title,description,inputSchema,annotations}` (canonic
 **TL;DR: the identity payoff needs the repo to look alive.**
 
 - [x] CONTRIBUTING.md + issue templates (bug / false-positive report / new-rule proposal)
-- [ ] CI matrix: Node 20/22/24; a scheduled run against the current MCP spec to catch protocol drift
-- [ ] Semantic-release or Changesets so versioning is automatic
-- [ ] A `good first issue` or two seeded for real (new rule ideas) — invites the contributions that make "I maintain X" true
+- [x] CI matrix: Node 20/22/24; a scheduled run against the current MCP spec to catch protocol drift
+- [x] Semantic-release or Changesets so versioning is automatic
+- [x] A `good first issue` or two seeded for real (new rule ideas) — invites the contributions that make "I maintain X" true
 
 **Acceptance:** contributor scaffolding live; scheduled spec-drift job green; release automation working.
-**As-shipped delta:** · **Deferred:**
+**As-shipped delta:** ✅ **PASSED** (2026-08-14).
+- `CONTRIBUTING.md` with the bar a rule must clear to be merged, plus three issue templates — including a dedicated **false-positive** template, since a check that cries wolf is the failure mode that kills a linter.
+- **`spec-drift.yml`**: a weekly job that lists the dated revision directories in the schema repo and fails when one newer than our pinned `LATEST_PROTOCOL_VERSION` appears. **Logic validated live** — it enumerated 2024-11-05 → 2026-07-28 and correctly reported no drift. My first version was circular (it read the version out of the versioned file, which always matches itself); rewritten to compare against the published directory listing.
+- CI additionally fails when `RULES.md` is stale, so docs drift is a red build too.
+- **5 good first issues seeded** in CONTRIBUTING with real substance (env-dump detection, `--theme` TOML loading, S8 token passthrough, resources/prompts coverage, more benign fixtures) — genuine gaps, not busywork.
+**Deferred:** Changesets/semantic-release. Deliberate: for a pre-1.0 solo package the tag-triggered OIDC release is already automated end-to-end, and adding a release-automation framework buys ceremony rather than safety. Revisit if there are multiple maintainers.
 
 ---
 

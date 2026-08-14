@@ -112,8 +112,19 @@ mcpaudit/
 
 > Update at every sprint close.
 
-**Current state:** **Sprint 0 closed (2026-08-14).** Scaffold live: TS strict, vitest (15 green), eslint, MIT, `src/brand.ts`, `src/args.ts` (hand-rolled), `src/cli.ts` (`--help`/`--version`), CI on Node 20/22/24 + weekly spec-drift run, `release.yml` on OIDC trusted publishing. **Zero runtime deps, enforced by test.** Name locked `@br9704/mcp-audit`, verified free on npm. Aethereum room `mcpaudit` live (join `HHUUV7`).
+**Current state:** **Sprints 0–10 CLOSED (2026-08-14). All engineering complete; only the Sprint 11 owner-gate block remains.**
+
+Shipped: 17 checks (9 conformance C0–C8, 7 safety S1–S7, plus D1 drift), both transports, era detection, terminal/JSON/SARIF reports, pin+drift, **113 tests green**, lint + typecheck clean, zero runtime deps (enforced by test), RULES.md generated from rule metadata with a staleness test, README with a real findings table over 4 audited reference servers, SECURITY.md, CONTRIBUTING.md, issue templates, CI on Node 20/22/24 + weekly spec-drift job. Clean-machine `npm pack` → `npx` verified.
+
+Two credibility saves worth remembering: (1) era-awareness — modern checks are *skipped* against legacy servers, so the real reference servers yield 2 findings rather than a false-positive wall; (2) the Sprint 6 hand-review caught 4 false positives ("clearly" matched the verb `clear`) before they reached the launch table. Regression tests pin both.
+
+**Remaining (owner only, Sprint 11):** npm 2FA + trusted-publisher config, publish approval, repo-public flip, brunojaamaa.dev cross-link, optional `mcp-audit` dispute ticket. Nothing to disclose — no exploitable finding was made.
+
+<details><summary>Sprint 0 close (historical)</summary>
+
+**Sprint 0 closed (2026-08-14).** Scaffold live: TS strict, vitest (15 green), eslint, MIT, `src/brand.ts`, `src/args.ts` (hand-rolled), `src/cli.ts` (`--help`/`--version`), CI on Node 20/22/24 + weekly spec-drift run, `release.yml` on OIDC trusted publishing. **Zero runtime deps, enforced by test.** Name locked `@br9704/mcp-audit`, verified free on npm. Aethereum room `mcpaudit` live (join `HHUUV7`).
 
 Protocol facts above were **re-verified against the live spec + schema on 2026-08-14 and are accurate as written**. Two additions worth knowing: unknown *method* → `-32601` **and HTTP 404**, while unknown *tool* → `-32602`; and implementations MUST NOT emit `-32020..-32099` codes the spec doesn't define. **Critical drift finding:** nothing in the ecosystem implements 2026-07-28 yet — `@modelcontextprotocol/server-everything@2026.7.4` is a **2025-06-18** server and SDK 1.30.0 tops out below it, so the legacy lane is the *primary* path and every check is era-aware (masterplan amendment A3, §3.1).
 
 Next: Sprint 1 — transport + protocol client + era detection.
+</details>

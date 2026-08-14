@@ -37,6 +37,11 @@ jobs:
       - name: Test
         run: npm test
 
+      - name: RULES.md is in sync with the code
+        run: |
+          npm run rules:gen
+          git diff --exit-code RULES.md
+
       - name: Verify the packed CLI actually runs
         run: |
           npm pack --silent

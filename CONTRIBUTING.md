@@ -107,3 +107,39 @@ is the most useful thing in the history.
 
 CI runs lint, typecheck and tests on Node 20/22/24, verifies the packed CLI actually runs,
 and fails if `RULES.md` is out of date with the code.
+
+## Releasing
+
+Versioning is manual and deliberate; publishing is not.
+
+```bash
+npm version patch|minor|major     # bumps package.json and tags
+git push --follow-tags            # the tag triggers .github/workflows/release.yml
+```
+
+`release.yml` publishes through **npm trusted publishing (OIDC)** from a GitHub-hosted
+runner with `id-token: write`. There is no npm token anywhere in the repository or in CI
+secrets, and provenance attestations are generated automatically — which is why the
+publish step deliberately does *not* pass `--provenance`.
+
+Before tagging: CI green on Node 20/22/24, `RULES.md` regenerated, and the README findings
+table re-run if any rule changed.
+
+## Good first issues
+
+Real gaps, in rough order of usefulness:
+
+- **Env-dump detection.** Flag tools that return the entire process environment. The
+  official `server-everything` ships `get-env` ("Returns all environment variables"), which
+  is a genuine credential-exposure surface. The hard part is not firing on legitimate debug
+  tooling — bring a proposed heuristic and a benign counter-example.
+- **`--theme <file>`.** The reporter already inherits the ccline design language (ANSI-16
+  by index, plain/nerd icon duality). Loading a ccline `.toml` theme directly needs a small
+  TOML subset parser, and no runtime dependency is permitted.
+- **S8 token passthrough / OAuth metadata SSRF.** Deferred because no live 2026-07-28 HTTP
+  server with auth exists to test against. Needs a fixture first.
+- **`resources/` and `prompts/` coverage.** Every check today looks at tools. Resource
+  descriptions and prompt templates reach the model the same way and deserve the same
+  Lane B scrutiny.
+- **More `fixtures/benign` cases.** The most valuable contribution in the repo: every
+  realistic legitimate pattern added there is a false positive that can never ship.

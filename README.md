@@ -1,5 +1,10 @@
 # mcpaudit
 
+[![npm](https://img.shields.io/npm/v/%40br9704%2Fmcp-audit)](https://www.npmjs.com/package/@br9704/mcp-audit)
+[![CI](https://github.com/br9704/mcpaudit/actions/workflows/ci.yml/badge.svg)](https://github.com/br9704/mcpaudit/actions/workflows/ci.yml)
+[![provenance](https://img.shields.io/badge/provenance-signed-blue)](https://docs.npmjs.com/generating-provenance-statements)
+[![runtime deps](https://img.shields.io/badge/runtime%20deps-0-brightgreen)](#supply-chain)
+
 **A conformance + safety linter for MCP servers.** Point it at any Model Context Protocol
 server — stdio or Streamable HTTP — and get a report.
 

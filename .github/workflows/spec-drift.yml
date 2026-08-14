@@ -1,0 +1,49 @@
+name: Spec drift
+
+# The MCP specification moves fast and our checks encode it. This job lists the
+# revisions published in the schema repository and fails if a dated revision
+# newer than the one we build against has appeared, so a new revision surfaces
+# as a red build rather than as silently wrong findings.
+on:
+  schedule:
+    - cron: "0 7 * * 1"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      - name: Compare our pinned revision against published revisions
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+
+          ours=$(grep -oE 'LATEST_PROTOCOL_VERSION = "[0-9]{4}-[0-9]{2}-[0-9]{2}"' \
+            src/protocol/types.ts | grep -oE '[0-9]{4}-[0-9]{2}-[0-9]{2}')
+          echo "mcpaudit builds against: $ours"
+
+          # Dated revision directories in the schema repo, newest last.
+          published=$(gh api \
+            repos/modelcontextprotocol/modelcontextprotocol/contents/schema \
+            --jq '.[] | select(.type=="dir") | .name' \
+            | grep -E '^[0-9]{4}-[0-9]{2}-[0-9]{2}$' | sort)
+          echo "published revisions:"
+          echo "$published" | sed 's/^/  /'
+
+          newest=$(echo "$published" | tail -1)
+          echo "newest published: $newest"
+
+          if [ "$newest" != "$ours" ]; then
+            echo "::error::Protocol revision drift: mcpaudit builds against $ours but $newest is published. Re-verify the checks in RULES.md against the new revision."
+            exit 1
+          fi
+          echo "No drift: $ours is still the newest published revision."
