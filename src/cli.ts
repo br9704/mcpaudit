@@ -4,6 +4,13 @@ import { fileURLToPath } from "node:url";
 import { BIN_NAME, DISPLAY_NAME, FRAMING, REPO_URL, TAGLINE } from "./brand.js";
 import { VERSION } from "./version.js";
 import { ArgError, parseArgs } from "./args.js";
+import { audit, readToolSurface } from "./engine.js";
+import { ALL_RULES, ALL_RULE_META } from "./registry.js";
+import { atOrAbove, maxSeverity, type AuditReport } from "./schema/finding.js";
+import { renderTerminal } from "./report/terminal.js";
+import { renderJson, renderJsonMany } from "./report/json.js";
+import { renderSarifMany } from "./report/sarif.js";
+import { Theme } from "./report/theme.js";
 
 /** Exit codes are part of the CI contract (masterplan Sprint 2). */
 export const EXIT_OK = 0;
@@ -78,11 +85,54 @@ export async function main(argv: readonly string[]): Promise<number> {
     return EXIT_ERROR;
   }
 
-  // Audit pipeline lands in Sprint 1+ (transport → probes → rules → report).
-  process.stderr.write(
-    `${BIN_NAME}: the audit pipeline is not wired up yet (Sprint 1).\n`,
-  );
-  return EXIT_ERROR;
+  try {
+    // Cross-server shadowing needs every target's tool surface, so with more
+    // than one target we read the others first and hand them to each audit.
+    const surfaces =
+      args.targets.length > 1
+        ? await Promise.all(
+            args.targets.map(async (t) => ({
+              target: t,
+              tools: await readToolSurface(t, args.passthrough, args.timeoutMs),
+            })),
+          )
+        : [];
+
+    const reports: AuditReport[] = [];
+    for (const target of args.targets) {
+      reports.push(
+        await audit({
+          target,
+          passthrough: args.passthrough,
+          timeoutMs: args.timeoutMs,
+          rules: ALL_RULES,
+          siblings: surfaces.filter((s) => s.target !== target),
+        }),
+      );
+    }
+
+    if (args.json) {
+      process.stdout.write(
+        reports.length === 1 ? renderJson(reports[0]!) : renderJsonMany(reports),
+      );
+    } else if (args.sarif) {
+      process.stdout.write(renderSarifMany(reports, ALL_RULE_META));
+    } else {
+      const theme = Theme.resolve({ color: args.color, icons: args.icons });
+      for (const r of reports) process.stdout.write(renderTerminal(r, theme));
+    }
+
+    // Exit 2 if we could not talk to a server at all; findings are exit 1.
+    if (reports.some((r) => r.era === "unknown")) return EXIT_ERROR;
+
+    const worst = maxSeverity(reports.flatMap((r) => r.findings));
+    return worst !== undefined && atOrAbove(worst, args.failOn) ? EXIT_FINDINGS : EXIT_OK;
+  } catch (err) {
+    process.stderr.write(
+      `${BIN_NAME}: ${err instanceof Error ? err.message : String(err)}\n`,
+    );
+    return EXIT_ERROR;
+  }
 }
 
 /**

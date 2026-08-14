@@ -1,7 +1,7 @@
 # masterplan.md — mcpaudit
 # From empty repo to a published, credible MCP conformance + safety linter
 
-> **Current sprint: Sprint 2** (move this pointer at every close) · Sprints 0–1 closed 2026-08-14
+> **Current sprint: Sprint 3** (move this pointer at every close) · Sprints 0–2 closed 2026-08-14
 >
 > Status: `[ ]` not started · `[~]` in progress · `[x]` done · `[⏭]` deferred (+reason)
 >
@@ -141,12 +141,12 @@ HTTP adds a status-code signal: `400` + recognized modern JSON-RPC error body �
 ## Sprint 2 — Finding model + report pipeline
 **TL;DR: one Finding schema; terminal + JSON + SARIF out; exit codes; RULES.md is generated.**
 
-- [ ] `schema/finding.ts` (CONTRACT): `{ id, lane: "conformance"|"safety", severity: info|low|warn|error, title, detail, evidence, specRef?, cwe?, owaspMcp?, falsePositiveModes[], remediation }`
-- [ ] Rules/probes are **self-describing**: each exports metadata (id, what/why/FP-modes) → RULES.md is generated from them (docs can't drift from code)
-- [ ] `report/terminal.ts`: monospace, B&W, box-drawn — Bruno's design edge; grouped by lane + severity; summary line
-- [ ] `report/json.ts` (`--json`) and `report/sarif.ts` (`--sarif`, SARIF 2.1.0 for CI/code-scanning — almost no competitor emits this)
-- [ ] Exit codes: 0 / 1 (`--fail-on`) / 2 (error); default threshold `warn`
-- [ ] `record_decision`: severity model + SARIF mapping
+- [x] `schema/finding.ts` (CONTRACT): `{ id, lane: "conformance"|"safety", severity: info|low|warn|error, title, detail, evidence, specRef?, cwe?, owaspMcp?, falsePositiveModes[], remediation }`
+- [x] Rules/probes are **self-describing**: each exports metadata (id, what/why/FP-modes) → RULES.md is generated from them (docs can't drift from code)
+- [x] `report/terminal.ts`: monospace, B&W, box-drawn — Bruno's design edge; grouped by lane + severity; summary line
+- [x] `report/json.ts` (`--json`) and `report/sarif.ts` (`--sarif`, SARIF 2.1.0 for CI/code-scanning — almost no competitor emits this)
+- [x] Exit codes: 0 / 1 (`--fail-on`) / 2 (error); default threshold `warn`
+- [x] `record_decision`: severity model + SARIF mapping
 
 ### 2.1 Contracts (expanded session 1)
 ```ts
@@ -182,7 +182,14 @@ interface Rule {                    // the rule-plugin interface (declare_contra
 - Exit codes: `0` clean · `1` findings ≥ `--fail-on` threshold (default `warn`) · `2` tool/connection error.
 
 **Acceptance:** a stub finding renders in all three formats; `--sarif` validates against the SARIF schema; exit codes correct in a shell test.
-**As-shipped delta:** · **Deferred:**
+**As-shipped delta:** ✅ **PASSED** (2026-08-14). 57 tests green. The full pipeline is wired: `mcpaudit <target>` now connects, detects era, runs rules and renders a report.
+- All three formats implemented and tested. SARIF asserted structurally: `version 2.1.0`, driver rules populated from rule metadata, and **`ruleIndex` verified to point at the matching rule** (the field most tools get wrong). Severity→level mapping tested across all four severities.
+- **Exit codes tested end-to-end against the real built binary**, not just `main()`: clean→0, info-under-threshold→0, `--fail-on info`→1, unreachable server→2. Sprint 0 taught us unit tests can pass while the packed CLI is broken.
+- `sanitizeSnippet()` escapes ANSI, zero-width and bidi characters before any finding is displayed — otherwise a server flagged for ANSI injection could inject ANSI into the report flagging it. Tested.
+- Every finding carries its own `falsePositiveModes` and `remediation` in **all three formats**, not only in RULES.md, so the honesty travels with the data.
+- Engine caches `tools/list` once and shares it across rules, and a rule that throws is recorded as an errored check rather than aborting the run.
+- `npm test` now builds first, so the e2e tests can never run against a stale `dist/`.
+**Deferred:** `--theme <file>` loading of ccline TOML files (design tokens are inherited now; file loading is Sprint 7 polish). RULES.md generation moves to Sprint 7 where the ruleset is complete.
 
 ---
 

@@ -41,11 +41,12 @@
   "scripts": {
     "build": "tsc -p tsconfig.build.json && node scripts/chmod-bin.mjs",
     "typecheck": "tsc --noEmit",
-    "test": "vitest run",
+    "test": "npm run build && vitest run",
     "test:watch": "vitest",
     "lint": "eslint .",
     "rules:gen": "node --experimental-strip-types scripts/gen-rules.ts",
-    "prepack": "npm run build"
+    "prepack": "npm run build",
+    "test:unit": "vitest run"
   },
   "devDependencies": {
     "@types/node": "^22.10.2",
