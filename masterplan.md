@@ -1,7 +1,7 @@
 # masterplan.md — mcpaudit
 # From empty repo to a published, credible MCP conformance + safety linter
 
-> **Current sprint: Sprint 1** (move this pointer at every close) · Sprint 0 closed 2026-08-14
+> **Current sprint: Sprint 2** (move this pointer at every close) · Sprints 0–1 closed 2026-08-14
 >
 > Status: `[ ]` not started · `[~]` in progress · `[x]` done · `[⏭]` deferred (+reason)
 >
@@ -96,16 +96,16 @@ Probed `@modelcontextprotocol/server-everything@2026.7.4` over stdio:
 **TL;DR: connect over stdio and Streamable HTTP; speak the stateless protocol; detect legacy servers.**
 
 ### 1.1 Transports
-- [ ] `transport/stdio.ts`: spawn server command, JSON-RPC over stdio (this is our differentiator — the official suite can't)
-- [ ] `transport/http.ts`: Streamable HTTP single endpoint; send required headers (`MCP-Protocol-Version`, `Mcp-Method`, `Mcp-Name`); handle per-request-SSE response streams
-- [ ] `transport/detect.ts`: target is a command → stdio; URL → http
+- [x] `transport/stdio.ts`: spawn server command, JSON-RPC over stdio (this is our differentiator — the official suite can't)
+- [x] `transport/http.ts`: Streamable HTTP single endpoint; send required headers (`MCP-Protocol-Version`, `Mcp-Method`, `Mcp-Name`); handle per-request-SSE response streams
+- [x] `transport/detect.ts`: target is a command → stdio; URL → http
 
 ### 1.2 Protocol layer
-- [ ] Per-request `_meta` injection (`protocolVersion`, `clientCapabilities`, `clientInfo`)
-- [ ] `server/discover` call → capabilities/versions/serverInfo/instructions
-- [ ] **Legacy fallback:** if `server/discover` is method-not-found, attempt the pre-2026 `initialize` handshake; on success mark server `protocol: pre-2026-07-28` (Finding, severity info) and run the back-compat conformance lane
-- [ ] Re-verify every fact in CLAUDE.md's "Verified protocol facts" against the live spec + schema repo; correct any drift and `record_decision`
-- [ ] `declare_contract`: the internal `McpClient` interface
+- [x] Per-request `_meta` injection (`protocolVersion`, `clientCapabilities`, `clientInfo`)
+- [x] `server/discover` call → capabilities/versions/serverInfo/instructions
+- [x] **Legacy fallback:** if `server/discover` is method-not-found, attempt the pre-2026 `initialize` handshake; on success mark server `protocol: pre-2026-07-28` (Finding, severity info) and run the back-compat conformance lane
+- [x] Re-verify every fact in CLAUDE.md's "Verified protocol facts" against the live spec + schema repo; correct any drift and `record_decision`
+- [x] `declare_contract`: the internal `McpClient` interface
 
 ### 1.3 Era detection (expanded session 1 — this is now the centrepiece of Sprint 1)
 `protocol/era.ts` implements the spec's stdio backward-compat probe verbatim. Send `server/discover` with modern `_meta` FIRST, then classify:
@@ -127,7 +127,14 @@ HTTP adds a status-code signal: `400` + recognized modern JSON-RPC error body �
 - Uses Node built-in `fetch` — no `undici` dep.
 
 **Acceptance:** connects to a real reference server (e.g. `@modelcontextprotocol/server-everything` or filesystem server) over both transports where applicable; `server/discover` result parsed; legacy fallback proven against an old-SDK server.
-**As-shipped delta:** · **Deferred:**
+**As-shipped delta:** ✅ **PASSED** (2026-08-14). 40 tests green, `tsc --noEmit` + eslint clean.
+- **Legacy fallback proven against the real thing:** run against `@modelcontextprotocol/server-everything@2026.7.4` → `server/discover` → `-32601` → falls back → `initialize` → negotiates **2025-11-25**, extracts `serverInfo {mcp-servers/everything, 2.0.0}` + 6 capabilities, then `tools/list` returns 13 tools with **`resultType` absent** (correctly tolerated as legacy).
+- **Modern lane proven against `fixtures/modern-good`** — written by hand because nothing else on earth implements 2026-07-28. It validates required `_meta` → `-32602`, emits `resultType`/`ttlMs`/`cacheScope`, and returns tools in deterministic order.
+- **HTTP transport proven end-to-end** against an in-test Node server: required headers sent, **SSE response streams parsed** (keep-alive comments ignored, notifications separated from the response), header/body mismatch → `-32020` + 400, unknown method → `-32601` + 404, GET/DELETE → 405, and a dead socket → clean `timeout` rather than a hang.
+- `McpClient` contract declared to the room. Requests **never throw** — a hostile server is data, not an exception — so every call returns an `RpcResponse` carrying outcome, raw evidence, HTTP status and elapsed time. This is what lets Lane A report failures instead of crashing on them.
+- Security choice: stdio spawns with `shell: false` and a hand-written tokenizer, so a crafted target string cannot smuggle `;` / `$(…)` into a shell. Covered by test.
+- Hardening carried in early: 8 MB max line, 16 MB max body, 64 KB stderr cap, unref'd timers, and `stderr` captured but never treated as failure (spec says clients SHOULD NOT assume stderr means error).
+**Deferred:** `subscriptions/listen` streaming and MRTR (`input_required`) round-trips — not needed by any Sprint 3/4 check; revisit only if a rule requires them.
 
 ---
 
