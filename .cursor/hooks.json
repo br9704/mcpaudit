@@ -1,0 +1,20 @@
+{
+  "version": 1,
+  "hooks": {
+    "sessionStart": [
+      {
+        "command": "npx -y aethereum@0.9.9 hook cursor-session-start"
+      }
+    ],
+    "postToolUse": [
+      {
+        "command": "npx -y aethereum@0.9.9 hook cursor-post-tool-use"
+      }
+    ],
+    "stop": [
+      {
+        "command": "npx -y aethereum@0.9.9 hook cursor-stop"
+      }
+    ]
+  }
+}

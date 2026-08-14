@@ -1,0 +1,19 @@
+{
+  "hooks": {
+    "SessionStart": [
+      {
+        "command": "npx -y aethereum@0.9.9 hook codex-session-start"
+      }
+    ],
+    "UserPromptSubmit": [
+      {
+        "command": "npx -y aethereum@0.9.9 hook codex-prompt"
+      }
+    ],
+    "Stop": [
+      {
+        "command": "npx -y aethereum@0.9.9 hook codex-stop"
+      }
+    ]
+  }
+}

@@ -1,0 +1,39 @@
+name: Release
+
+on:
+  push:
+    tags: ["v*"]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  # Required for npm trusted publishing (OIDC). Without this the publish step
+  # cannot mint an identity token and falls back to a token that does not exist.
+  id-token: write
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest # trusted publishing requires a GitHub-hosted runner
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          # Trusted publishing requires Node >= 22.14.0 and npm >= 11.5.1.
+          node-version: "22.14.0"
+          registry-url: "https://registry.npmjs.org"
+
+      - name: Pin an npm that supports trusted publishing
+        run: npm i -g npm@latest
+
+      - run: npm ci
+      - run: npm run lint
+      - run: npm run typecheck
+      - run: npm test
+      - run: npm run build
+
+      # No --provenance flag: under trusted publishing npm generates and
+      # publishes provenance attestations automatically for a public package
+      # from a public repo. Passing the flag is redundant.
+      - name: Publish
+        run: npm publish

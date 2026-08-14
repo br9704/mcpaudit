@@ -1,0 +1,58 @@
+{
+  "name": "@br9704/mcp-audit",
+  "version": "0.1.0",
+  "description": "A first-pass linter for MCP servers: spec conformance + safety heuristics, in one local zero-dependency CLI.",
+  "keywords": [
+    "mcp",
+    "model-context-protocol",
+    "linter",
+    "conformance",
+    "security",
+    "static-analysis",
+    "sarif"
+  ],
+  "homepage": "https://github.com/br9704/mcpaudit#readme",
+  "bugs": "https://github.com/br9704/mcpaudit/issues",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/br9704/mcpaudit.git"
+  },
+  "license": "MIT",
+  "author": "Bruno Jaamaa <jaamaabruno@gmail.com> (https://github.com/br9704)",
+  "type": "module",
+  "bin": {
+    "mcpaudit": "dist/cli.js"
+  },
+  "exports": {
+    ".": "./dist/index.js"
+  },
+  "files": [
+    "dist",
+    "RULES.md",
+    "README.md",
+    "LICENSE"
+  ],
+  "engines": {
+    "node": ">=20"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.build.json && node scripts/chmod-bin.mjs",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "lint": "eslint .",
+    "rules:gen": "node --experimental-strip-types scripts/gen-rules.ts",
+    "prepack": "npm run build"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.2",
+    "@typescript-eslint/eslint-plugin": "^8.18.0",
+    "@typescript-eslint/parser": "^8.18.0",
+    "eslint": "^9.17.0",
+    "typescript": "^5.7.2",
+    "vitest": "^2.1.8"
+  }
+}

@@ -1,0 +1,48 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  # Catch protocol drift: the MCP spec moves fast and our checks encode it.
+  schedule:
+    - cron: "0 6 * * 1"
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        node: ["20", "22", "24"]
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node }}
+          cache: npm
+
+      - run: npm ci
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Typecheck
+        run: npm run typecheck
+
+      - name: Test
+        run: npm test
+
+      - name: Verify the packed CLI actually runs
+        run: |
+          npm pack --silent
+          tarball=$(ls *.tgz)
+          mkdir -p /tmp/packtest && cd /tmp/packtest
+          npm init -y >/dev/null
+          npm i "$GITHUB_WORKSPACE/$tarball" --no-audit --no-fund
+          npx mcpaudit --help
+          npx mcpaudit --version

@@ -1,0 +1,15 @@
+# Added by aethereum init
+.mcp.json
+.cursor/mcp.json
+.vscode/mcp.json
+opencode.json
+
+# Node
+node_modules/
+dist/
+*.tsbuildinfo
+*.tgz
+
+# Test/scratch
+coverage/
+.vitest/

@@ -1,0 +1,78 @@
+{
+  "hooks": {
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "npx -y aethereum@0.9.9 hook session-start",
+            "timeout": 20
+          }
+        ]
+      }
+    ],
+    "UserPromptSubmit": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "npx -y aethereum@0.9.9 hook prompt",
+            "timeout": 20
+          }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "npx -y aethereum@0.9.9 hook post-tool-use",
+            "timeout": 20
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "npx -y aethereum@0.9.9 hook stop",
+            "timeout": 20
+          }
+        ]
+      }
+    ],
+    "SubagentStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "npx -y aethereum@0.9.9 hook subagent-start",
+            "timeout": 20
+          }
+        ]
+      }
+    ],
+    "SubagentStop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "npx -y aethereum@0.9.9 hook subagent-stop",
+            "timeout": 20
+          }
+        ]
+      }
+    ]
+  },
+  "enabledMcpjsonServers": [
+    "aethereum",
+    "aethereum-channel"
+  ],
+  "statusLine": {
+    "type": "command",
+    "command": "npx -y aethereum@0.9.9 statusline"
+  }
+}
