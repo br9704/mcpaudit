@@ -7,9 +7,14 @@ import type { Rule } from "./rules/types.js";
 import type { RuleMeta } from "./schema/finding.js";
 
 import { rule as c0 } from "./probe/c0-protocol-era.js";
+import { rule as c1 } from "./probe/c1-discover.js";
+import { rule as c2 } from "./probe/c2-tools-hygiene.js";
+import { rule as c3 } from "./probe/c3-meta-validation.js";
+import { c4, c5, c6 } from "./probe/c4-c5-c6.js";
+import { c7, c8 } from "./probe/c7-c8.js";
 
 /** Lane A — conformance. */
-export const CONFORMANCE_RULES: readonly Rule[] = [c0];
+export const CONFORMANCE_RULES: readonly Rule[] = [c0, c1, c2, c3, c4, c5, c6, c7, c8];
 
 /** Lane B — safety. */
 export const SAFETY_RULES: readonly Rule[] = [];

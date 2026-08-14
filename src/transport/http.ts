@@ -20,7 +20,6 @@ const NAME_SOURCE: Record<string, "name" | "uri"> = {
  */
 export function encodeHeaderValue(value: string): string {
   const needsEncoding =
-    // eslint-disable-next-line no-control-regex
     /[^\x20-\x7E]/.test(value) ||
     value !== value.trim() ||
     (value.startsWith("=?base64?") && value.endsWith("?="));

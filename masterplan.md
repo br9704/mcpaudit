@@ -1,7 +1,7 @@
 # masterplan.md — mcpaudit
 # From empty repo to a published, credible MCP conformance + safety linter
 
-> **Current sprint: Sprint 3** (move this pointer at every close) · Sprints 0–2 closed 2026-08-14
+> **Current sprint: Sprint 4** (move this pointer at every close) · Sprints 0–3 closed 2026-08-14
 >
 > Status: `[ ]` not started · `[~]` in progress · `[x]` done · `[⏭]` deferred (+reason)
 >
@@ -196,15 +196,15 @@ interface Rule {                    // the rule-plugin interface (declare_contra
 ## Sprint 3 — Lane A: Conformance checks (≥6, don't let it sprawl)
 **TL;DR: correctness against 2026-07-28. Ship six solid checks, then STOP and do safety.**
 
-- [ ] C1 `server/discover` present + well-formed (missing = major finding; it's mandatory)
-- [ ] C2 tools/list: schema validity (each `inputSchema` is a valid JSON-Schema 2020-12 object, not null), name charset/length/uniqueness, deterministic order, `ttlMs`/`cacheScope` presence
-- [ ] C3 malformed-input handling: send a request missing required `_meta` → expect `-32602`/HTTP 400, not a crash/hang
-- [ ] C4 unknown-method behavior → `-32601`
-- [ ] C5 timeout/hang detection: does a well-formed call return within a bounded time?
-- [ ] C6 response-shape conformance: results carry `resultType`; error codes in the valid ranges; resource-not-found is `-32602` (accept `-32002` from legacy, note it)
-- [ ] Optional C7 header validation (HTTP): mismatched `MCP-Protocol-Version` → `-32020`
-- [ ] Each check → a self-describing probe module + a fixture server that passes and one that fails it
-- [ ] **Hard stop:** when 6 checks + fixtures are green, move to Sprint 4. Conformance must not eat the safety lane.
+- [x] C1 `server/discover` present + well-formed (missing = major finding; it's mandatory)
+- [x] C2 tools/list: schema validity (each `inputSchema` is a valid JSON-Schema 2020-12 object, not null), name charset/length/uniqueness, deterministic order, `ttlMs`/`cacheScope` presence
+- [x] C3 malformed-input handling: send a request missing required `_meta` → expect `-32602`/HTTP 400, not a crash/hang
+- [x] C4 unknown-method behavior → `-32601`
+- [x] C5 timeout/hang detection: does a well-formed call return within a bounded time?
+- [x] C6 response-shape conformance: results carry `resultType`; error codes in the valid ranges; resource-not-found is `-32602` (accept `-32002` from legacy, note it)
+- [x] Optional C7 header validation (HTTP): mismatched `MCP-Protocol-Version` → `-32020`
+- [x] Each check → a self-describing probe module + a fixture server that passes and one that fails it
+- [x] **Hard stop:** when 6 checks + fixtures are green, move to Sprint 4. Conformance must not eat the safety lane.
 
 ### 3.1 Era-aware check table (expanded session 1 — supersedes the flat list above)
 Every check declares `appliesTo`. Checks that don't apply are **skipped with a reason**, never failed. This is the single most important guard against a wall of false positives (see Phase 1 reconciliation).
@@ -227,7 +227,14 @@ Every check declares `appliesTo`. Checks that don't apply are **skipped with a r
 `fixtures/modern-good` (the only 2026-07-28-conformant server in existence — we write it) · `fixtures/modern-bad` (one failure per check) · `fixtures/legacy` (initialize-era) · `fixtures/hostile` (garbage/truncated/oversized/hanging, for the Sprint 7 fuzz pass).
 
 **Acceptance:** 6+ checks, each with pass-fixture + fail-fixture, all green in CI; runs against 2 real public servers without false crashes.
-**As-shipped delta:** · **Deferred:**
+**As-shipped delta:** ✅ **PASSED** (2026-08-14). **9 checks shipped** (C0–C8), 67 tests green. Hard stop honoured: stopped here and moved straight to Lane B.
+- **The era-awareness design is validated by the numbers.** Against the real `@modelcontextprotocol/server-everything`, the audit reports exactly **two** findings — `C0_PRE_2026_PROTOCOL` (info) and `C8_ANSWERS_BEFORE_INITIALIZE` (warn) — with C1/C3/C7 correctly *skipped*, not failed. A non-era-aware build would have emitted a wall of false failures here.
+- `fixtures/modern-good` produces **zero findings with all 7 applicable checks actively passing** — the clean-server baseline that proves the checks are not just always-fire.
+- `fixtures/modern-bad` triggers **18 findings** across C1/C2/C3/C4/C6, one per deliberate defect.
+- Added `fixtures/reserved-code`: modern-bad could not cover `C6_RESERVED_CODE_MISUSE` because it uses its unknown-tool path for a different defect. Novel check — emitting an unallocated code from the spec-reserved -32020..-32099 range.
+- **Fixture bug caught by an absent finding:** modern-bad reversed its tool order to test determinism, but its tool names were a palindrome, so reversal was a no-op and `C2_NONDETERMINISTIC_ORDER` never fired. Added a fourth tool to break the symmetry. A green suite would have hidden this.
+- A metadata-discipline test asserts every rule has non-empty `falsePositiveModes`, a real `remediation`, and a substantive `why` — the linter framing enforced in CI rather than by good intentions.
+**Deferred:** C7 exercised only against an in-test HTTP server; a real public HTTP MCP server on 2026-07-28 does not exist yet to test against.
 
 ---
 

@@ -32,9 +32,16 @@ describe("exit codes (end-to-end)", () => {
     expect(code).toBe(0);
   });
 
-  it("exits 0 for info findings under the default warn threshold", async () => {
+  it("exits 1 at the default warn threshold when a warn finding is present", async () => {
+    // The legacy fixture answers before initialize (C8), which is a warn.
     const { code, stdout } = await cli([`node ${LEGACY}`]);
     expect(stdout).toContain("pre-2026");
+    expect(code).toBe(1);
+  });
+
+  it("exits 0 when every finding sits below the threshold", async () => {
+    // Same server, but nothing it reports reaches `error`.
+    const { code } = await cli([`node ${LEGACY}`, "--fail-on", "error"]);
     expect(code).toBe(0);
   });
 
