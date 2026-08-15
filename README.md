@@ -147,8 +147,8 @@ step rather than a pre-release ritual.
 **A determinism check never fired because the fixture was a palindrome.** The
 deliberately-broken fixture reversed its tool order to trip `C2_NONDETERMINISTIC_ORDER`,
 but its tool names were symmetrical, so reversal was a no-op. A fourth tool broke the
-symmetry. Similarly, `S6_CONTROL_IN_OUTPUT` scanned the raw wire bytes — where an ESC is
-where an ESC byte always arrives already JSON-escaped, so it could never match. It now scans decoded text.
+symmetry. Similarly, `S6_CONTROL_IN_OUTPUT` scanned the raw wire bytes, where an ESC byte
+always arrives already JSON-escaped, so it could never match. It now scans decoded text.
 
 **Two false positives on the benign fixture were both modes I had documented but not
 implemented.** `S1_HIDDEN_CHARACTERS` fired on the zero-width joiners inside an emoji
