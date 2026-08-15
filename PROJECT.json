@@ -1,0 +1,100 @@
+{
+  "schema": 1,
+  "slug": "mcpaudit",
+  "name": "mcpaudit",
+  "oneLiner": "Lints any MCP server for spec conformance and safety, locally, with zero dependencies.",
+  "status": "shipped",
+  "role": "SOLO BUILD",
+  "year": "2026",
+  "updated": "2026-08-15",
+  "links": {
+    "github": "https://github.com/br9704/mcpaudit",
+    "live": null,
+    "npm": null,
+    "huggingface": null,
+    "appstore": null
+  },
+  "stack": ["typescript", "node", "vitest", "eslint", "github-actions", "sarif"],
+  "metrics": [
+    {
+      "value": "17",
+      "label": "checks, each with documented false-positive modes",
+      "source": "RULES.md"
+    },
+    {
+      "value": "0",
+      "label": "runtime dependencies, enforced by a test",
+      "source": "test/supply-chain.test.ts"
+    },
+    {
+      "value": "113",
+      "label": "tests, on Node 20, 22 and 24",
+      "source": "CHANGELOG.md"
+    },
+    {
+      "value": "4",
+      "label": "official reference servers audited, raw JSON committed",
+      "source": "audits/server-everything.json"
+    }
+  ],
+  "headline": {
+    "claim": "Every official MCP reference server still speaks a protocol revision the current spec replaced, so every check had to become era-aware before the tool could report anything credible.",
+    "source": "README.md#what-it-found"
+  },
+  "honest": "It reads what a server says about itself and applies heuristics; it does not execute tools, analyse source, or prove anything, and a clean report only means nothing common was found. Schema validation is structural rather than full JSON Schema 2020-12, only tools are inspected (not resources or prompts), and the modern-protocol lane has never met a real modern server because none exists yet.",
+  "media": {
+    "hero": "docs/media/demo.svg",
+    "demo": null,
+    "diagram": null
+  },
+  "built": {
+    "audit": "Research found no tool combining conformance and safety in one local CLI, and no shipping MCP server implementing the current 2026-07-28 stateless protocol.",
+    "repaired": [
+      "The packed CLI produced no output at all under npx, because the entry-point guard compared against a symlinked bin path; every unit test passed throughout.",
+      "A determinism check never fired because the broken fixture's tool names were a palindrome, so reversing their order was a no-op.",
+      "S6 scanned raw wire bytes where an ESC always arrives JSON-escaped, so it could never match; it now scans decoded text.",
+      "Four false positives at error severity on real reference servers: 'clearly' matched the destructive verb 'clear' for lack of a trailing word boundary. Caught by hand-review before publication; regression tests now pin the exact strings.",
+      "The drift detector hashed uncanonicalised JSON, so a server that merely reordered its keys would have looked like a rug pull on every re-audit.",
+      "The weekly spec-drift job was circular, reading the protocol version out of the versioned file that always matches itself."
+    ],
+    "measured": [
+      "Four official reference servers audited with raw --json committed: all speak 2025-11-25, nine findings total, zero at error severity.",
+      "Era-awareness reduced those four audits from a wall of false failures to two findings each, by skipping inapplicable checks with a stated reason.",
+      "npm pack installed into a clean directory resolves to a single package with no transitive dependencies."
+    ],
+    "decisions": [
+      {
+        "what": "Zero runtime dependencies over commander, zod and undici",
+        "why": "A security tool's own supply chain is part of its pitch; the official conformance suite ships with a substantial dependency tree. The cost, stated openly, is structural rather than full JSON Schema validation."
+      },
+      {
+        "what": "Era-aware checks over a flat conformance suite",
+        "why": "No shipping server implements 2026-07-28, so firing modern checks at legacy servers would produce a wall of false positives and destroy credibility on contact. Inapplicable checks are skipped with a reason, never failed."
+      },
+      {
+        "what": "Linter framing, never 'security audit'",
+        "why": "Overclaiming security invites public dismantling by people who do this professionally. Every check documents how it misfires, and RULES.md is generated from that metadata so it cannot drift."
+      }
+    ]
+  },
+  "ownerGated": [
+    "npm account 2FA confirmation and trusted-publisher configuration",
+    "first publish of @br9704/mcp-audit to npm",
+    "cross-link from brunojaamaa.dev",
+    "optional npm name-dispute ticket for the squatted mcp-audit"
+  ],
+  "github": {
+    "description": "A conformance + safety linter for MCP servers. Zero dependencies, no API key, fully local.",
+    "topics": [
+      "mcp",
+      "model-context-protocol",
+      "linter",
+      "static-analysis",
+      "sarif",
+      "cli",
+      "typescript",
+      "ai-safety"
+    ]
+  },
+  "masterplan": "masterplan.md"
+}

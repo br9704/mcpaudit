@@ -376,9 +376,9 @@ Per-tool hash covers `{name,title,description,inputSchema,annotations}` (canonic
 
 - [ ] `ask_human`: publish approval
 - [ ] Publish via OIDC/provenance CI on a tagged release; verify `npx <name> <public-server>` works from a clean machine
-- [x] Repo public; topics set; README badges (npm version, provenance, CI) live
-- [x] Cross-link from brunojaamaa.dev; draft the launch note (honest scope, invite contributions)
-- [x] Optional: submit to the MCP registry / awesome-mcp-security list (real tool, not link-farming)
+- [⏭ Sprint 11 per A4] Repo public; topics set; README badges (npm version, provenance, CI) live — *badges are **wired**, not live; corrected 2026-08-15 during Sprint D, where the docs pass found the GitHub repo did not exist at all*
+- [⏭ Sprint 11 per A4] Cross-link from brunojaamaa.dev; draft the launch note (honest scope, invite contributions)
+- [⏭ Sprint 11 per A4] Optional: submit to the MCP registry / awesome-mcp-security list (real tool, not link-farming)
 
 **Acceptance:** package live with provenance badge; clean-machine `npx` recorded; launch note drafted for Bruno.
 **As-shipped delta:** ⚠️ **RAILS COMPLETE, PUBLISH IS OWNER-GATED (A4).** Everything short of the actual publish is done and verified.
@@ -404,6 +404,34 @@ Per-tool hash covers `{name,title,description,inputSchema,annotations}` (canonic
 - CI additionally fails when `RULES.md` is stale, so docs drift is a red build too.
 - **5 good first issues seeded** in CONTRIBUTING with real substance (env-dump detection, `--theme` TOML loading, S8 token passthrough, resources/prompts coverage, more benign fixtures) — genuine gaps, not busywork.
 **Deferred:** Changesets/semantic-release. Deliberate: for a pre-1.0 solo package the tag-triggered OIDC release is already automated end-to-end, and adding a release-automation framework buys ceremony rather than safety. Revisit if there are multiple maintainers.
+
+---
+
+## Sprint D — Documentation pass (2026-08-15)
+**TL;DR: make the repo read well to a stranger, and make every number in it point at a committed artifact.**
+
+Driven by `DOCS-ENGINEERPROMPT.md` (a generic per-project template, deliberately left uncommitted — it references private local paths).
+
+- [x] Verify every claim in the current-state line against a live run before reusing it
+- [x] Rewrite README to the docs-pass structure: hook → hero visual → run command → findings table → framing → architecture (Mermaid) → how it was built → verification → usage → limitations → status
+- [x] Hand-author `docs/media/demo.svg` — a terminal render whose every visible value matches `audits/server-everything.json`
+- [x] `PROJECT.json` at the repo root for the portfolio to consume; every `metrics[].source` points at a file that exists
+- [x] `CHANGELOG.md` with the 0.1.0 entry
+- [x] Repo hygiene: scrub leaked local paths, drop duplicate/process docs, untrack per-developer agent wiring
+- [x] Fix the defects the pass surfaced rather than documenting around them
+
+**Acceptance:** a stranger can find the receipt for every claim in the README; no number appears without a committed source.
+**As-shipped delta:** ✅ **PASSED** (2026-08-15). The pass was worth running as an audit, not just a rewrite — it found nine defects, four of them things that would have shipped publicly:
+
+- **All four `audits/*.json` leaked the author's machine.** `target.raw` and `target.describe` carried an absolute scratchpad path containing the macOS username and a session UUID — in the exact files the README invites readers to open as proof, and while SECURITY.md claimed every finding was "reproducible in one command". Rewritten to the reproducible `npx -y @modelcontextprotocol/server-…` invocation.
+- **The README's Version column was not in the evidence it cited.** It listed npm package versions (`2026.7.4`); the committed JSON records `serverInfo` (`mcp-servers/everything 2.0.0`). Replaced with a "Reports itself as" column carrying the values the audits actually prove — which is also more interesting, since the self-reported names do not match the package names.
+- **`--help` printed the severity order wrong** (`info|warn|low|error`); the real ordering is `info|low|warn|error`. A source bug found by reading the docs against the parser, `src/cli.ts:46`.
+- **Sprint 9 carried three false `[x]` marks** claiming the repo was public with live badges. The GitHub repo did not exist at all — no remote was ever configured. Corrected above.
+- Deleted `GEMINI.md` (byte-identical to `AGENTS.md`) and `ENGINEERPROMPT.md` (kickoff scaffolding, not a repo artifact). Untracked `.claude/`, `.codex/`, `.cursor/` — committing `.claude/settings.json` would have made every cloner run this project's Aethereum hooks on six lifecycle events. Added `.env*`, `.mcpaudit-baseline*.json` and `.DS_Store` to `.gitignore`.
+- **Plan inconsistency resolved:** §Phase 1 records server-everything as a 2025-06-18 server; Sprint 1 and all four committed audits record **2025-11-25**. The 2025-06-18 reading came from a raw `initialize` probe during research; **2025-11-25 is the negotiated value and the one public copy uses.**
+- One irony worth recording: the first README draft contained a literal ESC byte, exactly what `S6_CONTROL_SEQUENCES` exists to catch. Caught by scanning the file for control characters before commit.
+
+**Deferred:** asciinema recording (the hand-authored SVG is diffable and needs no external tooling); `docs/` site. The "official conformance suite carries 11 runtime deps" claim was **dropped from public copy** rather than repeated — it is a competitive number with no in-repo source, and the zero-dep claim stands on its own test.
 
 ---
 

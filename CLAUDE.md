@@ -112,7 +112,9 @@ mcpaudit/
 
 > Update at every sprint close.
 
-**Current state:** **Sprints 0–10 CLOSED (2026-08-14). All engineering complete; only the Sprint 11 owner-gate block remains.**
+**Current state:** **Sprints 0–10 + Sprint D CLOSED (2026-08-15). All engineering and documentation complete; only the Sprint 11 owner-gate block remains.**
+
+Sprint D (documentation pass) ran as an audit, not just a rewrite, and found nine defects — four of which would have shipped publicly. The worst: all four committed `audits/*.json` leaked an absolute scratchpad path with the macOS username and a session UUID, in the exact files the README cites as proof. Also corrected: a README column citing versions its own evidence did not contain, a wrong severity order in `--help`, and **three false `[x]` marks in Sprint 9 claiming the repo was public — the GitHub repo did not exist at all.** Shipped: rewritten README (hero SVG, Mermaid architecture, how-it-was-built, limitations, status), `PROJECT.json`, `CHANGELOG.md`, and repo hygiene. Never assume a `[x]` in the plan means the outward-facing state is real — verify against the world.
 
 Shipped: 17 checks (9 conformance C0–C8, 7 safety S1–S7, plus D1 drift), both transports, era detection, terminal/JSON/SARIF reports, pin+drift, **113 tests green**, lint + typecheck clean, zero runtime deps (enforced by test), RULES.md generated from rule metadata with a staleness test, README with a real findings table over 4 audited reference servers, SECURITY.md, CONTRIBUTING.md, issue templates, CI on Node 20/22/24 + weekly spec-drift job. Clean-machine `npm pack` → `npx` verified.
 

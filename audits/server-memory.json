@@ -4,12 +4,12 @@
     "name": "@br9704/mcp-audit",
     "version": "0.1.0"
   },
-  "startedAt": "2026-08-14T12:07:05.905Z",
-  "elapsedMs": 172,
+  "startedAt": "2026-08-15T07:54:35.677Z",
+  "elapsedMs": 2178,
   "target": {
-    "raw": "node /private/tmp/claude-501/-Users-brunojaamaa-Desktop-mcpaudit/381dca63-5b83-4b21-962f-b15ca8857b14/scratchpad/probe/node_modules/@modelcontextprotocol/server-memory/dist/index.js",
+    "raw": "npx -y @modelcontextprotocol/server-memory",
     "kind": "stdio",
-    "describe": "node /private/tmp/claude-501/-Users-brunojaamaa-Desktop-mcpaudit/381dca63-5b83-4b21-962f-b15ca8857b14/scratchpad/probe/node_modules/@modelcontextprotocol/server-memory/dist/index.js"
+    "describe": "npx -y @modelcontextprotocol/server-memory"
   },
   "era": "legacy",
   "protocolVersion": "2025-11-25",
@@ -107,13 +107,13 @@
           "remediation": "Reject requests that arrive before a successful initialize handshake, or migrate to 2026-07-28 where every request carries its own protocol version."
         }
       ],
-      "elapsedMs": 82
+      "elapsedMs": 677
     },
     {
       "ruleId": "S1_TOOL_POISONING",
       "status": "pass",
       "findings": [],
-      "elapsedMs": 1
+      "elapsedMs": 2
     },
     {
       "ruleId": "S2_DESTRUCTIVE_ANNOTATION",

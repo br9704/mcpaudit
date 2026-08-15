@@ -13,3 +13,22 @@ dist/
 # Test/scratch
 coverage/
 .vitest/
+
+# Secrets
+.env
+.env.*
+
+# This tool's own baseline output, when run against this repo
+.mcpaudit-baseline*.json
+
+# Per-developer agent/editor wiring — not a repo artifact
+.claude/
+.codex/
+.cursor/
+.vscode/
+
+# macOS
+.DS_Store
+
+# Documentation-pass scaffolding (a generic template, references private paths)
+DOCS-ENGINEERPROMPT.md

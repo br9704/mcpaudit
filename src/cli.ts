@@ -43,7 +43,7 @@ ${h("OPTIONS")}
   ${f("--json")}                  machine-readable report on stdout
   ${f("--sarif")}                 SARIF 2.1.0 report ${d("(GitHub code scanning)")}
   ${f("--fail-on <level>")}       exit 1 at or above this severity
-                          ${d("info|warn|low|error            (default: warn)")}
+                          ${d("info|low|warn|error            (default: warn)")}
   ${f("--pin[=<path>]")}          write a baseline snapshot      ${d("(default: .mcpaudit-baseline.json)")}
   ${f("--baseline <path>")}       diff against a baseline; drift is a finding
   ${f("--timeout <ms>")}          per-request timeout            ${d("(default: 10000)")}

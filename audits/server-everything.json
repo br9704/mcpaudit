@@ -4,12 +4,12 @@
     "name": "@br9704/mcp-audit",
     "version": "0.1.0"
   },
-  "startedAt": "2026-08-14T12:07:05.193Z",
-  "elapsedMs": 184,
+  "startedAt": "2026-08-15T07:54:27.580Z",
+  "elapsedMs": 4760,
   "target": {
-    "raw": "node /private/tmp/claude-501/-Users-brunojaamaa-Desktop-mcpaudit/381dca63-5b83-4b21-962f-b15ca8857b14/scratchpad/probe/node_modules/@modelcontextprotocol/server-everything/dist/index.js stdio",
+    "raw": "npx -y @modelcontextprotocol/server-everything stdio",
     "kind": "stdio",
-    "describe": "node /private/tmp/claude-501/-Users-brunojaamaa-Desktop-mcpaudit/381dca63-5b83-4b21-962f-b15ca8857b14/scratchpad/probe/node_modules/@modelcontextprotocol/server-everything/dist/index.js stdio"
+    "describe": "npx -y @modelcontextprotocol/server-everything stdio"
   },
   "era": "legacy",
   "protocolVersion": "2025-11-25",
@@ -108,7 +108,7 @@
           "remediation": "Reject requests that arrive before a successful initialize handshake, or migrate to 2026-07-28 where every request carries its own protocol version."
         }
       ],
-      "elapsedMs": 89
+      "elapsedMs": 719
     },
     {
       "ruleId": "S1_TOOL_POISONING",
@@ -120,7 +120,7 @@
       "ruleId": "S2_DESTRUCTIVE_ANNOTATION",
       "status": "pass",
       "findings": [],
-      "elapsedMs": 3
+      "elapsedMs": 2
     },
     {
       "ruleId": "S3_CREDENTIAL_EXPOSURE",
@@ -132,7 +132,7 @@
       "ruleId": "S4_SCHEMA_EGRESS_DOS",
       "status": "pass",
       "findings": [],
-      "elapsedMs": 0
+      "elapsedMs": 1
     },
     {
       "ruleId": "S5_CROSS_SERVER_SHADOWING",
@@ -145,7 +145,7 @@
       "ruleId": "S6_CONTROL_SEQUENCES",
       "status": "pass",
       "findings": [],
-      "elapsedMs": 1
+      "elapsedMs": 0
     },
     {
       "ruleId": "S7_ICON_URI",

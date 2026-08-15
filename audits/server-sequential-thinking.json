@@ -4,12 +4,12 @@
     "name": "@br9704/mcp-audit",
     "version": "0.1.0"
   },
-  "startedAt": "2026-08-14T12:07:06.113Z",
-  "elapsedMs": 229,
+  "startedAt": "2026-08-15T07:54:37.897Z",
+  "elapsedMs": 3421,
   "target": {
-    "raw": "node /private/tmp/claude-501/-Users-brunojaamaa-Desktop-mcpaudit/381dca63-5b83-4b21-962f-b15ca8857b14/scratchpad/probe/node_modules/@modelcontextprotocol/server-sequential-thinking/dist/index.js",
+    "raw": "npx -y @modelcontextprotocol/server-sequential-thinking",
     "kind": "stdio",
-    "describe": "node /private/tmp/claude-501/-Users-brunojaamaa-Desktop-mcpaudit/381dca63-5b83-4b21-962f-b15ca8857b14/scratchpad/probe/node_modules/@modelcontextprotocol/server-sequential-thinking/dist/index.js"
+    "describe": "npx -y @modelcontextprotocol/server-sequential-thinking"
   },
   "era": "legacy",
   "protocolVersion": "2025-11-25",
@@ -41,7 +41,7 @@
           "remediation": "Track the 2026-07-28 revision when your SDK supports it: implement server/discover, validate the required _meta keys per request, and emit resultType on every result."
         }
       ],
-      "elapsedMs": 0
+      "elapsedMs": 1
     },
     {
       "ruleId": "C1_DISCOVER",
@@ -107,7 +107,7 @@
           "remediation": "Reject requests that arrive before a successful initialize handshake, or migrate to 2026-07-28 where every request carries its own protocol version."
         }
       ],
-      "elapsedMs": 141
+      "elapsedMs": 814
     },
     {
       "ruleId": "S1_TOOL_POISONING",
@@ -143,7 +143,7 @@
       "ruleId": "S2_DESTRUCTIVE_ANNOTATION",
       "status": "pass",
       "findings": [],
-      "elapsedMs": 2
+      "elapsedMs": 1
     },
     {
       "ruleId": "S3_CREDENTIAL_EXPOSURE",
@@ -168,7 +168,7 @@
       "ruleId": "S6_CONTROL_SEQUENCES",
       "status": "pass",
       "findings": [],
-      "elapsedMs": 0
+      "elapsedMs": 1
     },
     {
       "ruleId": "S7_ICON_URI",
