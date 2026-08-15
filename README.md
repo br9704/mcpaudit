@@ -1,6 +1,6 @@
 # mcpaudit
 
-[![npm](https://img.shields.io/npm/v/%40br9704%2Fmcp-audit)](https://www.npmjs.com/package/@br9704/mcp-audit)
+[![npm](https://img.shields.io/npm/v/%40aethereumdev%2Fmcp-audit)](https://www.npmjs.com/package/@aethereumdev/mcp-audit)
 [![CI](https://github.com/br9704/mcpaudit/actions/workflows/ci.yml/badge.svg)](https://github.com/br9704/mcpaudit/actions/workflows/ci.yml)
 [![runtime deps](https://img.shields.io/badge/runtime%20deps-0-brightgreen)](#supply-chain)
 [![node](https://img.shields.io/badge/node-%E2%89%A5%2020-blue)](#supply-chain)
@@ -12,7 +12,7 @@ server — stdio or Streamable HTTP — and get a report.
 ![mcpaudit auditing a reference MCP server: one warning, one info, four checks skipped as not applicable](https://raw.githubusercontent.com/br9704/mcpaudit/main/docs/media/demo.svg)
 
 ```bash
-npx @br9704/mcp-audit "npx -y @modelcontextprotocol/server-filesystem /tmp"
+npx @aethereumdev/mcp-audit "npx -y @modelcontextprotocol/server-filesystem /tmp"
 ```
 
 Zero runtime dependencies. No API key. No telemetry. The only network traffic is to the
@@ -194,16 +194,16 @@ node dist/cli.js "node fixtures/benign/server.mjs"      # clean — exit 0
 
 ```bash
 # stdio (a command)
-npx @br9704/mcp-audit "npx -y @modelcontextprotocol/server-memory"
+npx @aethereumdev/mcp-audit "npx -y @modelcontextprotocol/server-memory"
 
 # Streamable HTTP (a URL)
-npx @br9704/mcp-audit https://example.com/mcp
+npx @aethereumdev/mcp-audit https://example.com/mcp
 
 # CI: SARIF for GitHub code scanning
-npx @br9704/mcp-audit https://example.com/mcp --sarif > mcp.sarif
+npx @aethereumdev/mcp-audit https://example.com/mcp --sarif > mcp.sarif
 
 # Cross-server shadowing needs more than one target
-npx @br9704/mcp-audit "npx -y server-a" "npx -y server-b"
+npx @aethereumdev/mcp-audit "npx -y server-a" "npx -y server-b"
 ```
 
 Anything after `--` is passed through verbatim to a stdio server command.
@@ -215,8 +215,8 @@ instructions your model follows, with no version bump and no code change on your
 Pin the surface, then diff it:
 
 ```bash
-npx @br9704/mcp-audit "npx -y my-server" --pin          # writes .mcpaudit-baseline.json
-npx @br9704/mcp-audit "npx -y my-server" --baseline .mcpaudit-baseline.json
+npx @aethereumdev/mcp-audit "npx -y my-server" --pin          # writes .mcpaudit-baseline.json
+npx @aethereumdev/mcp-audit "npx -y my-server" --baseline .mcpaudit-baseline.json
 ```
 
 Drift reports which field changed, with the old and new values inline. Description and

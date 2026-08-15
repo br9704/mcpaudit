@@ -483,9 +483,19 @@ Driven by `DOCS-ENGINEERPROMPT.md` (a generic per-project template, deliberately
 
 - [ ] Confirm FIDO 2FA on the npm account; configure the trusted publisher for `@br9704/mcp-audit` (first publish of a scoped package may need the package to exist or the org configured — verify at this point)
 
-> **Verified 2026-08-15 (Sprint D) — publish preconditions all green.** `npm whoami` returns **`aethereum-dev`**, which is the intended account (owner confirmation): `npm org ls br9704` reports `br9704 - owner`, so **`@br9704` is an npm org this account owns** and is authorised to publish into the scope. The name is free (registry 404 for `@br9704/mcp-audit`). `npm publish --dry-run --access public` produces a correct tarball: 109 files, 108.3 kB packed, 419.1 kB unpacked, `@br9704/mcp-audit@0.1.0`, public access, `publishConfig.access: public` honoured.
+> **Superseded by A8 — see below.** The scope changed from `@br9704` to `@aethereumdev` on 2026-08-15 after a live publish attempt returned 404.
 >
-> **Sequencing caveat:** `release.yml` fires on a `v*` tag and runs a bare `npm publish`. If 0.1.0 is published manually first, do **not** then push a `v0.1.0` tag — the workflow would attempt to republish an existing version and fail. Either publish manually and let the next tag be `v0.1.1`, or skip the manual publish and let the tag do the first release (the only path that produces a provenance attestation).
+> **Sequencing caveat (still applies):** `release.yml` fires on a `v*` tag and runs a bare `npm publish`. If 0.1.0 is published manually first, do **not** then push a `v0.1.0` tag — the workflow would attempt to republish an existing version and fail. Either publish manually and let the next tag be `v0.1.1`, or skip the manual publish and let the tag do the first release (the only path that produces a provenance attestation).
+
+---
+
+**A8 · Name changed to `@aethereumdev/mcp-audit` (2026-08-15, owner decision — supersedes A1's scope).** The first publish attempt failed with `E404 PUT`, which is what npm returns for an unauthorised scope rather than a 403, so it reads like a missing package. Diagnosis: the workstation's npm session is `aethereum-dev`, which owns exactly one org — `aethereumdev`. Org `br9704` has a single member, the user `br9704`. I had misread `npm org ls br9704` (it lists the org's *roster*, so `br9704 - owner` names the member, not the caller) and briefly recorded the opposite in this plan; corrected above.
+
+Owner's call: `aethereum-dev` is the account to use, so the package ships as **`@aethereumdev/mcp-audit`**. The GitHub repo stays `br9704/mcpaudit` and `REPO_URL` is unchanged — only the registry scope moved.
+
+**What this validated:** the one-line-rename premise from CLAUDE.md's Naming section mostly held, but not entirely. `src/brand.ts` was one line; the surrounding blast radius was `package.json`, `package-lock.json`, README (badge URL, npm link, seven `npx` invocations), `PROJECT.json`, `docs/media/demo.svg`, `test/report.test.ts` (two hard-coded literals — a deliberate canary), the generated `RULES.md`, and all four `audits/*.json`, whose `tool.name` records the auditing tool. The audits were **re-run live** rather than string-replaced, so the committed evidence stays real: identical findings (2/2/2/3), same protocols, same `serverInfo`. 113/113 tests green, lint and typecheck clean after the change.
+
+**Historical records above are left as written** — they were accurate when made. A1's reasoning about the squatted `mcp-audit` stub still stands; only the scope changed.
 - [ ] `ask_human`: publish approval → tag release → verify provenance badge + clean-machine `npx`
 - [ ] `ask_human` per disclosure: send any prepared vulnerability report; hold the README table generic until patched
 - [ ] Flip repo public; set topics; cross-link from brunojaamaa.dev; post the launch note

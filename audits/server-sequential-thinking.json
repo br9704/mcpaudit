@@ -1,11 +1,11 @@
 {
   "schemaVersion": 1,
   "tool": {
-    "name": "@br9704/mcp-audit",
+    "name": "@aethereumdev/mcp-audit",
     "version": "0.1.0"
   },
-  "startedAt": "2026-08-15T07:54:37.897Z",
-  "elapsedMs": 3421,
+  "startedAt": "2026-08-15T08:06:47.851Z",
+  "elapsedMs": 1977,
   "target": {
     "raw": "npx -y @modelcontextprotocol/server-sequential-thinking",
     "kind": "stdio",
@@ -41,7 +41,7 @@
           "remediation": "Track the 2026-07-28 revision when your SDK supports it: implement server/discover, validate the required _meta keys per request, and emit resultType on every result."
         }
       ],
-      "elapsedMs": 1
+      "elapsedMs": 0
     },
     {
       "ruleId": "C1_DISCOVER",
@@ -53,7 +53,7 @@
       "ruleId": "C2_TOOLS_HYGIENE",
       "status": "pass",
       "findings": [],
-      "elapsedMs": 0
+      "elapsedMs": 1
     },
     {
       "ruleId": "C3_META_VALIDATION",
@@ -77,7 +77,7 @@
       "ruleId": "C6_RESULT_SHAPE",
       "status": "pass",
       "findings": [],
-      "elapsedMs": 1
+      "elapsedMs": 0
     },
     {
       "ruleId": "C7_HTTP_HEADERS",
@@ -107,7 +107,7 @@
           "remediation": "Reject requests that arrive before a successful initialize handshake, or migrate to 2026-07-28 where every request carries its own protocol version."
         }
       ],
-      "elapsedMs": 814
+      "elapsedMs": 666
     },
     {
       "ruleId": "S1_TOOL_POISONING",
@@ -137,7 +137,7 @@
           "remediation": "Keep tool descriptions purely descriptive. Remove directives aimed at the model, hidden characters, and HTML comments. If a tool needs ordering guarantees, express them in the schema or in server instructions the user can see."
         }
       ],
-      "elapsedMs": 2
+      "elapsedMs": 1
     },
     {
       "ruleId": "S2_DESTRUCTIVE_ANNOTATION",
@@ -155,7 +155,7 @@
       "ruleId": "S4_SCHEMA_EGRESS_DOS",
       "status": "pass",
       "findings": [],
-      "elapsedMs": 0
+      "elapsedMs": 1
     },
     {
       "ruleId": "S5_CROSS_SERVER_SHADOWING",
@@ -168,7 +168,7 @@
       "ruleId": "S6_CONTROL_SEQUENCES",
       "status": "pass",
       "findings": [],
-      "elapsedMs": 1
+      "elapsedMs": 0
     },
     {
       "ruleId": "S7_ICON_URI",

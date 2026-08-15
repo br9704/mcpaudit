@@ -21,7 +21,7 @@
   <circle cx="56" cy="17" r="5" fill="#3f4650"/>
   <text class="bar" x="430" y="21" text-anchor="middle">mcpaudit</text>
   <rect x="0.5" y="0.5" width="859" height="540" rx="10" ry="10" fill="none" stroke="#21262d" stroke-width="1"/>
-  <text class="l" x="26" y="56" xml:space="preserve"><tspan class="p">$ </tspan><tspan class="t">npx @br9704/mcp-audit "npx -y @modelcontextprotocol/server-everything"</tspan></text>
+  <text class="l" x="26" y="56" xml:space="preserve"><tspan class="p">$ </tspan><tspan class="t">npx @aethereumdev/mcp-audit "npx -y @modelcontextprotocol/server-everything"</tspan></text>
   <text class="l" x="26" y="90" xml:space="preserve"><tspan class="h">mcpaudit</tspan><tspan class="d"> | </tspan><tspan class="t">v0.1.0</tspan><tspan class="d"> | </tspan><tspan class="t">npx -y @modelcontextprotocol/server-everything</tspan></text>
   <text class="l" x="26" y="107" xml:space="preserve"><tspan class="h">server-everything</tspan><tspan class="d"> | </tspan><tspan class="t">v2.0.0</tspan><tspan class="d"> | </tspan><tspan class="t">protocol: pre-2026 handshake · 2025-11-25</tspan></text>
   <text class="l" x="26" y="124" xml:space="preserve"><tspan class="r">────────────────────────────────────────────────────────────────────────────</tspan></text>

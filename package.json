@@ -1,5 +1,5 @@
 {
-  "name": "@br9704/mcp-audit",
+  "name": "@aethereumdev/mcp-audit",
   "version": "0.1.0",
   "description": "A first-pass linter for MCP servers: spec conformance + safety heuristics, in one local zero-dependency CLI.",
   "keywords": [

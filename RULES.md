@@ -6,7 +6,7 @@
 
 # Rules
 
-Every check @br9704/mcp-audit performs, what it looks for, why it matters, and — most
+Every check @aethereumdev/mcp-audit performs, what it looks for, why it matters, and — most
 importantly — **how it misfires**. A first-pass linter that catches common issues — not a security audit.
 A check that cannot state its own false-positive modes has no business shipping,
 so `falsePositiveModes` is a required field on every rule and this page is

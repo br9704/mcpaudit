@@ -5,7 +5,7 @@
  * `mcp-audit` on npm is squatted by a non-functional v0.0.1 stub; per masterplan
  * amendment A1 we ship scoped and do not plan around the dispute.
  */
-export const PKG_NAME = "@br9704/mcp-audit";
+export const PKG_NAME = "@aethereumdev/mcp-audit";
 
 /** The executable name, i.e. what a user types. */
 export const BIN_NAME = "mcpaudit";

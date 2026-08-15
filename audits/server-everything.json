@@ -1,11 +1,11 @@
 {
   "schemaVersion": 1,
   "tool": {
-    "name": "@br9704/mcp-audit",
+    "name": "@aethereumdev/mcp-audit",
     "version": "0.1.0"
   },
-  "startedAt": "2026-08-15T07:54:27.580Z",
-  "elapsedMs": 4760,
+  "startedAt": "2026-08-15T08:06:42.438Z",
+  "elapsedMs": 2055,
   "target": {
     "raw": "npx -y @modelcontextprotocol/server-everything stdio",
     "kind": "stdio",
@@ -108,13 +108,13 @@
           "remediation": "Reject requests that arrive before a successful initialize handshake, or migrate to 2026-07-28 where every request carries its own protocol version."
         }
       ],
-      "elapsedMs": 719
+      "elapsedMs": 716
     },
     {
       "ruleId": "S1_TOOL_POISONING",
       "status": "pass",
       "findings": [],
-      "elapsedMs": 1
+      "elapsedMs": 2
     },
     {
       "ruleId": "S2_DESTRUCTIVE_ANNOTATION",
@@ -132,14 +132,14 @@
       "ruleId": "S4_SCHEMA_EGRESS_DOS",
       "status": "pass",
       "findings": [],
-      "elapsedMs": 1
+      "elapsedMs": 0
     },
     {
       "ruleId": "S5_CROSS_SERVER_SHADOWING",
       "status": "skip",
       "skipReason": "needs more than one target; pass several servers in one run",
       "findings": [],
-      "elapsedMs": 0
+      "elapsedMs": 1
     },
     {
       "ruleId": "S6_CONTROL_SEQUENCES",
@@ -151,7 +151,7 @@
       "ruleId": "S7_ICON_URI",
       "status": "pass",
       "findings": [],
-      "elapsedMs": 0
+      "elapsedMs": 1
     }
   ],
   "findings": [

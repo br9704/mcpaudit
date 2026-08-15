@@ -34,6 +34,8 @@ Why it can win (verified market gap, Aug 2026):
 `mcp-audit` on npm is **squatted** by a hello-world stub (v0.0.1, Apr 2025). Options, in preference order:
 1. File an npm package-name dispute for `mcp-audit` (stub is non-functional; disputes take weeks — start early, don't block on it)
 2. Ship as `mcpaudit` / `mcp-auditor` / scoped `@br9704/mcp-audit` with `mcp-audit` claimed later
+
+> **Resolved (2026-08-15, amendment A8): the package is `@aethereumdev/mcp-audit`.** The `@br9704` scope is an npm org whose only member is the user `br9704`; the workstation publishes as `aethereum-dev`, which owns the `aethereumdev` org. Owner chose to use that account, so the scope moved. The GitHub repo stays `br9704/mcpaudit`. Note for future renames: `src/brand.ts` is one line, but the real blast radius is package.json, package-lock.json, README badge + install commands, PROJECT.json, the hero SVG, two hard-coded literals in `test/report.test.ts`, generated RULES.md, and `tool.name` in every committed audit — re-run those rather than string-replacing them.
 Route every user-facing name through ONE constant (`src/brand.ts`) so a rename is a one-line change.
 
 ---

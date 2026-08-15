@@ -32,7 +32,7 @@ function stubReport(): AuditReport {
   const f = finding(META, { detail: "A stub finding for format tests." });
   const results = [{ ruleId: META.id, status: "fail" as const, findings: [f] }];
   return {
-    tool: { name: "@br9704/mcp-audit", version: "0.1.0" },
+    tool: { name: "@aethereumdev/mcp-audit", version: "0.1.0" },
     startedAt: "2026-08-14T00:00:00.000Z",
     elapsedMs: 42,
     target: { raw: "npx -y demo", kind: "stdio", describe: "npx -y demo" },
@@ -120,7 +120,7 @@ describe("report formats", () => {
     expect(sarif.runs).toHaveLength(1);
 
     const run = sarif.runs[0]!;
-    expect(run.tool.driver.name).toBe("@br9704/mcp-audit");
+    expect(run.tool.driver.name).toBe("@aethereumdev/mcp-audit");
     expect(run.tool.driver.rules.map((r) => r.id)).toContain("T1_STUB");
 
     const result = run.results[0]!;

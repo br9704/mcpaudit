@@ -1,11 +1,11 @@
 {
   "schemaVersion": 1,
   "tool": {
-    "name": "@br9704/mcp-audit",
+    "name": "@aethereumdev/mcp-audit",
     "version": "0.1.0"
   },
-  "startedAt": "2026-08-15T07:54:32.382Z",
-  "elapsedMs": 3254,
+  "startedAt": "2026-08-15T08:06:44.532Z",
+  "elapsedMs": 1560,
   "target": {
     "raw": "npx -y @modelcontextprotocol/server-filesystem /tmp",
     "kind": "stdio",
@@ -107,13 +107,13 @@
           "remediation": "Reject requests that arrive before a successful initialize handshake, or migrate to 2026-07-28 where every request carries its own protocol version."
         }
       ],
-      "elapsedMs": 682
+      "elapsedMs": 686
     },
     {
       "ruleId": "S1_TOOL_POISONING",
       "status": "pass",
       "findings": [],
-      "elapsedMs": 1
+      "elapsedMs": 2
     },
     {
       "ruleId": "S2_DESTRUCTIVE_ANNOTATION",
