@@ -296,9 +296,15 @@ versions, and a release pipeline on npm trusted publishing (OIDC) with automatic
 provenance. Release is tag-driven; no npm token exists in the repo or in CI.
 
 One caveat worth stating rather than letting you discover it: **0.1.0 was published by
-hand, so it carries no provenance attestation.** Only a CI publish can produce one, and
-none can be added retroactively. Releases from 0.1.1 onward go through the tagged OIDC
-pipeline and are attested.
+hand, so it carries no provenance attestation** — `npm view @aethereumdev/mcp-audit
+dist.attestations` is empty. Only a CI publish can produce one, and none can be added
+retroactively.
+
+The release workflow carries no npm token by design and authenticates solely through
+trusted publishing, which is configured once on the registry side. Until that is done,
+releases are published manually and the workflow is inert rather than broken: it refuses a
+tag that disagrees with the manifest, skips a version that is already on the registry, and
+explains itself if authentication is not yet set up.
 
 Next, in rough order of usefulness: resource and prompt coverage, an env-dump rule for
 tools that return the whole environment, `S8` token passthrough once there is anything to

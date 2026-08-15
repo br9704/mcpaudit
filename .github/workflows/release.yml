@@ -32,8 +32,42 @@ jobs:
       - run: npm test
       - run: npm run build
 
+      # A tag that disagrees with the manifest publishes the manifest's version
+      # and leaves the tag lying about what shipped. Catch it before publishing.
+      - name: Tag must match package.json version
+        if: github.event_name == 'push'
+        run: |
+          TAG="${GITHUB_REF_NAME#v}"
+          PKG="$(node -p "require('./package.json').version")"
+          if [ "$TAG" != "$PKG" ]; then
+            echo "::error::Tag ${GITHUB_REF_NAME} does not match package.json version ${PKG}. Bump the manifest or retag."
+            exit 1
+          fi
+
+      # 0.1.0 was published by hand, so a v0.1.0 tag would otherwise try to
+      # republish an existing version and fail the run for no reason.
+      - name: Skip if this version is already on the registry
+        id: check
+        run: |
+          NAME="$(node -p "require('./package.json').name")"
+          VER="$(node -p "require('./package.json').version")"
+          if npm view "${NAME}@${VER}" version >/dev/null 2>&1; then
+            echo "already=true" >> "$GITHUB_OUTPUT"
+            echo "::notice::${NAME}@${VER} is already published — nothing to do."
+          else
+            echo "already=false" >> "$GITHUB_OUTPUT"
+          fi
+
       # No --provenance flag: under trusted publishing npm generates and
       # publishes provenance attestations automatically for a public package
       # from a public repo. Passing the flag is redundant.
       - name: Publish
+        if: steps.check.outputs.already == 'false'
         run: npm publish
+
+      # This workflow carries no npm token by design, so an auth failure here
+      # means one specific thing. Say so, rather than leaving a 404 to decode.
+      - name: Explain an authentication failure
+        if: failure()
+        run: |
+          echo "::error::Publish failed. This workflow authenticates only via npm trusted publishing (OIDC) and deliberately carries no npm token. Configure a trusted publisher once — npmjs.com > the package > Settings > Trusted Publisher > GitHub Actions, repo br9704/mcpaudit, workflow release.yml — then re-run. Until then, publish manually with 'npm publish'."

@@ -42,6 +42,10 @@ First release.
 
 ### Notes
 
+- Releases are published manually until a trusted publisher is configured on the registry.
+  The workflow is guarded rather than broken in the meantime: it rejects a tag whose
+  version disagrees with the manifest, skips a version already published, and explains the
+  one-time setup if authentication fails.
 - The release pipeline is tag-driven through npm trusted publishing (OIDC), which attaches
   provenance automatically. No npm token exists in the repository or in CI. **0.1.0 itself
   was published by hand and therefore carries no provenance attestation** — verifiable with

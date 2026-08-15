@@ -529,4 +529,8 @@ Owner's call: `aethereum-dev` is the account to use, so the package ships as **`
 - **Trusted publishing is web-UI only:** npm 11.6.2 exposes no CLI surface for it (`npm access` covers status, mfa and team grants; `npm help-search "trusted publisher"` returns nothing). Configuration therefore stays an owner action.
 
 **Deferred:** trusted-publisher configuration (owner, web UI) so `v0.1.1` onward is attested; the `mcp-audit` dispute ticket (owner, support form); brunojaamaa.dev cross-link (tracked in the portfolio repo, which consumes this repo's `PROJECT.json`).
+
+**Post-close hardening (2026-08-15, owner asked whether the trusted-publisher step could be avoided entirely).** It can be *deferred* but not worked around. The apparent alternative — an npm token in GitHub Secrets — was rejected on the facts: `npm token create` still prompts for a 2FA OTP, so it saves the owner no interaction, and it would put a long-lived publish credential in CI, contradicting A2 and falsifying the README's "no npm token exists in the repo or in CI". For a tool whose pitch is supply-chain hygiene, that is a bad trade for zero saved effort.
+
+Resolution: make manual publishing the supported path and stop the workflow from rotting into a trap. `release.yml` gained three guards — it refuses a tag whose version disagrees with `package.json` (the silent-lie case), **skips a version already on the registry** (so a `v0.1.0` tag no longer fails a run for no reason), and on any failure prints the one-time trusted-publisher setup instead of leaving an opaque auth error to decode. The pipeline is now inert-but-correct until the owner configures OIDC, at which point tagged releases start carrying provenance with no further code change.
 **As-shipped delta:** · **Deferred:**
