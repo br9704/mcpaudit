@@ -482,6 +482,10 @@ Driven by `DOCS-ENGINEERPROMPT.md` (a generic per-project template, deliberately
 **TL;DR: the only work that needs the owner. Batched at the end so nothing upstream blocks.**
 
 - [ ] Confirm FIDO 2FA on the npm account; configure the trusted publisher for `@br9704/mcp-audit` (first publish of a scoped package may need the package to exist or the org configured — verify at this point)
+
+> **Verified 2026-08-15 (Sprint D) — publish preconditions all green.** `npm whoami` returns **`aethereum-dev`**, which is the intended account (owner confirmation): `npm org ls br9704` reports `br9704 - owner`, so **`@br9704` is an npm org this account owns** and is authorised to publish into the scope. The name is free (registry 404 for `@br9704/mcp-audit`). `npm publish --dry-run --access public` produces a correct tarball: 109 files, 108.3 kB packed, 419.1 kB unpacked, `@br9704/mcp-audit@0.1.0`, public access, `publishConfig.access: public` honoured.
+>
+> **Sequencing caveat:** `release.yml` fires on a `v*` tag and runs a bare `npm publish`. If 0.1.0 is published manually first, do **not** then push a `v0.1.0` tag — the workflow would attempt to republish an existing version and fail. Either publish manually and let the next tag be `v0.1.1`, or skip the manual publish and let the tag do the first release (the only path that produces a provenance attestation).
 - [ ] `ask_human`: publish approval → tag release → verify provenance badge + clean-machine `npx`
 - [ ] `ask_human` per disclosure: send any prepared vulnerability report; hold the README table generic until patched
 - [ ] Flip repo public; set topics; cross-link from brunojaamaa.dev; post the launch note
