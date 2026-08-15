@@ -433,6 +433,25 @@ Driven by `DOCS-ENGINEERPROMPT.md` (a generic per-project template, deliberately
 
 **Deferred:** asciinema recording (the hand-authored SVG is diffable and needs no external tooling); `docs/` site. The "official conformance suite carries 11 runtime deps" claim was **dropped from public copy** rather than repeated — it is a competitive number with no in-repo source, and the zero-dep claim stands on its own test.
 
+### D.2 — Second pass: the hero image, and what rendering it proved (2026-08-15)
+
+A second session ran the same docs prompt concurrently and audited the output of the first. Two sessions writing one repo is its own hazard — it was resolved by the owner, not by the agents — but the second pass earned its keep on the hero image.
+
+- [x] **Replace the hand-authored hero with a generated one.** `scripts/make-demo-svg.mjs` runs the built CLI against a real server, parses the ANSI-16 the reporter actually emits, and converts it to SVG. The picture is now produced the way every number in the README is: from a committed artifact, regenerable with one command.
+- [x] `--color` now forces colour off-TTY (`src/args.ts`, `src/report/theme.ts`), covered by a test in `test/report.test.ts`
+- [x] Verify the published package from the registry rather than from the build directory
+- [x] Correct the CHANGELOG's provenance note
+
+**Why the hand-authored SVG had to go.** Its *numbers* were right — 1 warn, 1 info, 10 passed, 4 skipped, all matching `audits/server-everything.json`. Its *rendering* was invented: it named the server `server-everything` where the tool prints `mcp-servers/everything` (the audits' own point about self-reported names), dropped the `spec:` line and the entire INFO detail block, and showed a `$` command in a form that did not exist. A drawing of output that no run produced is the same category of claim as an unsourced number, and this project's whole pitch is that it does not make those.
+
+**`--color` was a documented no-op.** `--help` promises "force or disable ANSI colour", but `Theme.resolve` required a TTY, so `--color` did nothing through a pipe — which is exactly how a capture script has to run it. Found by needing the behaviour the flag already claimed to have.
+
+**Two bugs that only rendering could find.** The generator embedded the CSS font stack into a double-quoted XML attribute, and `"SF Mono"` closed the attribute early — the SVG was not well-formed, and macOS Quick Look showed a parse-error page instead of the terminal. Fixed by quoting the multi-word families with single quotes; `xmllint --noout` now gates it. Then the widest two lines (the rule id and the `spec:` URL, both left unwrapped by the reporter on purpose) clipped under any renderer whose monospace advance differed from the assumed 0.6em. Fixed with an explicit `textLength` per line, so the glyph grid no longer depends on which face the viewer resolves. **Quick Look proved to be the unreliable witness, not the SVG** — it ignores both `<style>` blocks and `textLength`; verification moved to headless Chrome, which is the engine GitHub actually renders with.
+
+**Verified against the registry, not the working tree.** `npx -y @aethereumdev/mcp-audit@0.1.0` in a clean directory audits a real server and reproduces the committed result; `npm ls --all` on the installed package shows a single entry with no transitive dependencies. The zero-dependency claim is now demonstrated on the artifact a stranger downloads. `npm view … dist.attestations` is empty, which is consistent with the manual publish and is what the README and CHANGELOG both now say.
+
+**Deferred:** byte-identical regeneration of the hero. The capture embeds a real elapsed-time measurement and fetches the target with `npx`, so re-running moves both; freezing them would mean faking them.
+
 ---
 
 ## Backlog (post-v1)

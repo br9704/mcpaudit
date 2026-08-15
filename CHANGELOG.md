@@ -26,7 +26,7 @@ First release.
   scanning.
 - **RULES.md generated from rule metadata**, with every rule's false-positive modes
   printed in full. CI fails when the committed copy is stale.
-- **113 tests** across 13 files, on Node 20, 22 and 24. Eight fixture servers, including a
+- **114 tests** across 13 files, on Node 20, 22 and 24. Eight fixture servers, including a
   hostile one serving a 2000-tool list, a 400-deep schema, a 500-notification flood,
   truncated JSON, garbage on stdout, and a server that exits mid-conversation.
 

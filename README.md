@@ -171,7 +171,7 @@ revision directory listing.
 
 | | |
 |---|---|
-| Tests | **113**, across 13 files |
+| Tests | **114**, across 13 files |
 | CI | Node 20, 22, 24 — lint, typecheck, test, RULES.md staleness, packed-CLI smoke test |
 | Fixtures | 8 stdio servers: benign, hostile, legacy, malicious, modern-bad, modern-good, reserved-code, shadow |
 | Network required | none — every fixture runs locally |
@@ -181,6 +181,12 @@ a 500-notification flood, garbage on stdout, truncated JSON, wrong-shaped envelo
 frame with no trailing newline, a server that says nothing at all, and a server that exits
 mid-conversation. Those tests passed on the first run, which is the payoff for the size
 caps and never-throw transport rather than a coincidence.
+
+The image at the top of this page is generated, not drawn:
+[`scripts/make-demo-svg.mjs`](./scripts/make-demo-svg.mjs) runs the built CLI against a
+real server, parses the ANSI it emits, and writes the SVG. Regenerate it with
+`npm run build && node scripts/make-demo-svg.mjs`. The elapsed time in the summary line is
+a real measurement, so it moves between runs.
 
 Reproduce the two ends of the range yourself, with no network:
 
@@ -285,7 +291,7 @@ A credibility section, not a weakness section. Everything here is a deliberate b
 ## Status
 
 v0.1.0. All eleven engineering sprints are closed: both transports, 17 checks, era
-detection, terminal/JSON/SARIF output, pin-and-drift, 113 tests, CI on three Node
+detection, terminal/JSON/SARIF output, pin-and-drift, 114 tests, CI on three Node
 versions, and a release pipeline on npm trusted publishing (OIDC) with automatic
 provenance. Release is tag-driven; no npm token exists in the repo or in CI.
 

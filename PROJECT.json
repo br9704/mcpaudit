@@ -27,7 +27,7 @@
       "source": "test/supply-chain.test.ts"
     },
     {
-      "value": "113",
+      "value": "114",
       "label": "tests, on Node 20, 22 and 24",
       "source": "CHANGELOG.md"
     },
@@ -44,7 +44,7 @@
   "honest": "It reads what a server says about itself and applies heuristics; it does not execute tools, analyse source, or prove anything, and a clean report only means nothing common was found. Schema validation is structural rather than full JSON Schema 2020-12, only tools are inspected (not resources or prompts), and the modern-protocol lane has never met a real modern server because none exists yet.",
   "media": {
     "hero": "docs/media/demo.svg",
-    "demo": null,
+    "demo": "docs/media/demo.svg",
     "diagram": null
   },
   "built": {
