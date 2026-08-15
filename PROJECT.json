@@ -12,7 +12,8 @@
     "live": null,
     "npm": "https://www.npmjs.com/package/@aethereumdev/mcp-audit",
     "huggingface": null,
-    "appstore": null
+    "appstore": null,
+    "caseStudy": "https://brunojaamaa.dev/projects/mcpaudit"
   },
   "stack": ["typescript", "node", "vitest", "eslint", "github-actions", "sarif"],
   "metrics": [

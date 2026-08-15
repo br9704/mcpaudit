@@ -18,6 +18,8 @@ npx @aethereumdev/mcp-audit "npx -y @modelcontextprotocol/server-filesystem /tmp
 Zero runtime dependencies. No API key. No telemetry. The only network traffic is to the
 server you asked it to audit.
 
+Case study: [brunojaamaa.dev/projects/mcpaudit](https://brunojaamaa.dev/projects/mcpaudit)
+
 ---
 
 ## What it found
