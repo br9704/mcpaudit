@@ -45,6 +45,7 @@
     "test:watch": "vitest",
     "lint": "eslint .",
     "rules:gen": "UPDATE_RULES=1 vitest run test/rules-doc.test.ts",
+    "demo:gen": "npm run build && node scripts/make-demo-svg.mjs",
     "prepack": "npm run build",
     "test:unit": "vitest run"
   },

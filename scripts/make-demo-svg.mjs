@@ -41,7 +41,23 @@ const BORDER = "#21262d";
 
 const FONT_SIZE = 12.5;
 const LINE_H = 17;
-const CHAR_W = 0.6 * FONT_SIZE; // monospace advance width
+// Monospace advance width. Every line is emitted with an explicit `textLength`
+// of exactly `chars * CHAR_W`, so the glyph grid is this width in every
+// renderer rather than whatever face the viewer happens to resolve. Without it
+// a wider substitute silently clips the two lines the reporter leaves
+// unwrapped — the rule id and the spec URL — which is precisely the content a
+// reader would want to check.
+const CHAR_W = 0.6 * FONT_SIZE;
+
+// Emitted as presentation attributes on every <text>, not via a CSS class:
+// several SVG renderers (macOS Quick Look among them) ignore a <style> block
+// and fall back to a 16px default, which silently clips the widest lines.
+// Single quotes around the multi-word families on purpose: this string is
+// interpolated into a double-quoted XML attribute, and double quotes here
+// terminate it early and make the document unparseable.
+const FONT_STACK =
+  "ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, 'Liberation Mono', monospace";
+const TEXT_ATTRS = `font-family="${FONT_STACK}" font-size="${FONT_SIZE}"`;
 const PAD_X = 20;
 const TITLEBAR_H = 34;
 const PAD_TOP = 14;
@@ -127,6 +143,12 @@ function widestLine(lines) {
   return max;
 }
 
+/** Pin a line to an exact width so the glyph grid does not depend on the face. */
+function fit(chars) {
+  if (!chars) return "";
+  return ` textLength="${(chars * CHAR_W).toFixed(1)}" lengthAdjust="spacingAndGlyphs"`;
+}
+
 function toSvg(lines, command) {
   const rendered = [{ text: `$ ${command}`, prompt: true }, null, ...lines];
   const cols = Math.max(widestLine(lines), command.length + 2);
@@ -141,7 +163,7 @@ function toSvg(lines, command) {
       if (line === null) return "";
       if (line.prompt) {
         return (
-          `  <text class="l" x="${PAD_X}" y="${y}" xml:space="preserve">` +
+          `  <text ${TEXT_ATTRS}${fit(line.text.length)} x="${PAD_X}" y="${y}" xml:space="preserve">` +
           `<tspan fill="${PALETTE[10]}">$ </tspan>` +
           `<tspan fill="${FG}">${xmlEscape(line.text.slice(2))}</tspan></text>`
         );
@@ -153,7 +175,9 @@ function toSvg(lines, command) {
           return `<tspan fill="${fill}"${weight}>${xmlEscape(r.text)}</tspan>`;
         })
         .join("");
-      return `  <text class="l" x="${PAD_X}" y="${y}" xml:space="preserve">${spans}</text>`;
+      let chars = 0;
+      for (const r of line) chars += [...r.text].length;
+      return `  <text ${TEXT_ATTRS}${fit(chars)} x="${PAD_X}" y="${y}" xml:space="preserve">${spans}</text>`;
     })
     .filter(Boolean)
     .join("\n");
@@ -164,17 +188,13 @@ function toSvg(lines, command) {
   return `<?xml version="1.0" encoding="UTF-8"?>
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${width} ${height}" width="${width}" height="${height}" role="img" aria-labelledby="demo-title">
   <title id="demo-title">${xmlEscape(title)}</title>
-  <style>
-    .l { font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace; font-size: ${FONT_SIZE}px; }
-    .bar { font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace; font-size: 11.5px; fill: #6e7681; }
-  </style>
   <rect x="0" y="0" width="${width}" height="${height}" rx="10" ry="10" fill="${BG}"/>
   <path d="M0 10 A10 10 0 0 1 10 0 H${width - 10} A10 10 0 0 1 ${width} 10 V${TITLEBAR_H} H0 Z" fill="${CHROME}"/>
   <line x1="0" y1="${TITLEBAR_H}" x2="${width}" y2="${TITLEBAR_H}" stroke="${BORDER}" stroke-width="1"/>
   <circle cx="20" cy="17" r="5" fill="#3f4650"/>
   <circle cx="38" cy="17" r="5" fill="#3f4650"/>
   <circle cx="56" cy="17" r="5" fill="#3f4650"/>
-  <text class="bar" x="${Math.round(width / 2)}" y="21" text-anchor="middle">mcpaudit</text>
+  <text font-family="${FONT_STACK}" font-size="11.5" fill="#6e7681" x="${Math.round(width / 2)}" y="21" text-anchor="middle">mcpaudit</text>
 ${body}
   <rect x="0.5" y="0.5" width="${width - 1}" height="${height - 1}" rx="10" ry="10" fill="none" stroke="${BORDER}" stroke-width="1"/>
 </svg>

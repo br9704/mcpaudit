@@ -42,7 +42,10 @@ First release.
 
 ### Notes
 
-- Release is tag-driven through npm trusted publishing (OIDC) with automatic provenance.
-  No npm token exists in the repository or in CI.
+- The release pipeline is tag-driven through npm trusted publishing (OIDC), which attaches
+  provenance automatically. No npm token exists in the repository or in CI. **0.1.0 itself
+  was published by hand and therefore carries no provenance attestation** — verifiable with
+  `npm view @aethereumdev/mcp-audit dist.attestations`, which is empty. An attestation
+  cannot be added after the fact, so the first release to carry one is 0.1.1.
 - `inputSchema` validation is structural, not full JSON Schema 2020-12 meta-validation.
   See Limitations in the README.
