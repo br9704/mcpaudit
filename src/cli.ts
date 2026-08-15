@@ -81,7 +81,11 @@ export async function main(argv: readonly string[]): Promise<number> {
   }
 
   if (args.help) {
-    process.stdout.write(helpText(Theme.resolve({ color: args.color, icons: args.icons })));
+    process.stdout.write(
+      helpText(
+        Theme.resolve({ color: args.color, colorForced: args.colorForced, icons: args.icons }),
+      ),
+    );
     return EXIT_OK;
   }
 
@@ -167,7 +171,11 @@ export async function main(argv: readonly string[]): Promise<number> {
     } else if (args.sarif) {
       process.stdout.write(renderSarifMany(reports, ALL_RULE_META));
     } else {
-      const theme = Theme.resolve({ color: args.color, icons: args.icons });
+      const theme = Theme.resolve({
+        color: args.color,
+        colorForced: args.colorForced,
+        icons: args.icons,
+      });
       for (const r of reports) process.stdout.write(renderTerminal(r, theme));
     }
 

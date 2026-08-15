@@ -3,14 +3,14 @@
   "slug": "mcpaudit",
   "name": "mcpaudit",
   "oneLiner": "Lints any MCP server for spec conformance and safety, locally, with zero dependencies.",
-  "status": "shipped",
+  "status": "published",
   "role": "SOLO BUILD",
   "year": "2026",
   "updated": "2026-08-15",
   "links": {
     "github": "https://github.com/br9704/mcpaudit",
     "live": null,
-    "npm": null,
+    "npm": "https://www.npmjs.com/package/@aethereumdev/mcp-audit",
     "huggingface": null,
     "appstore": null
   },
@@ -78,9 +78,7 @@
     ]
   },
   "ownerGated": [
-    "npm account 2FA confirmation and trusted-publisher configuration",
-    "first publish of @aethereumdev/mcp-audit to npm",
-    "cross-link from brunojaamaa.dev",
+    "trusted-publisher configuration on npm, so tagged releases from v0.1.1 carry provenance",
     "optional npm name-dispute ticket for the squatted mcp-audit"
   ],
   "github": {

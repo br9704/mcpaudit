@@ -1,46 +1,55 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 860 541" width="860" height="541" role="img" aria-labelledby="t">
-  <title id="t">mcpaudit auditing @modelcontextprotocol/server-everything: 1 warn, 1 info, 4 checks skipped as not applicable</title>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 895 744" width="895" height="744" role="img" aria-labelledby="demo-title">
+  <title id="demo-title">mcpaudit auditing a real MCP server: the report it prints, generated from actual output</title>
   <style>
     .l { font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace; font-size: 12.5px; }
-    .t { fill: #c9d1d9; }
-    .d { fill: #6e7681; }
-    .h { fill: #e6edf3; font-weight: 700; }
-    .w { fill: #d29922; font-weight: 700; }
-    .i { fill: #58a6ff; font-weight: 700; }
-    .r { fill: #30363d; }
-    .p { fill: #57ab5a; }
-    .f { fill: #6e7681; font-style: italic; }
     .bar { font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace; font-size: 11.5px; fill: #6e7681; }
   </style>
-  <rect x="0" y="0" width="860" height="541" rx="10" ry="10" fill="#0d1117"/>
-  <path d="M0 10 A10 10 0 0 1 10 0 H850 A10 10 0 0 1 860 10 V34 H0 Z" fill="#161b22"/>
-  <line x1="0" y1="34" x2="860" y2="34" stroke="#21262d" stroke-width="1"/>
+  <rect x="0" y="0" width="895" height="744" rx="10" ry="10" fill="#0d1117"/>
+  <path d="M0 10 A10 10 0 0 1 10 0 H885 A10 10 0 0 1 895 10 V34 H0 Z" fill="#161b22"/>
+  <line x1="0" y1="34" x2="895" y2="34" stroke="#21262d" stroke-width="1"/>
   <circle cx="20" cy="17" r="5" fill="#3f4650"/>
   <circle cx="38" cy="17" r="5" fill="#3f4650"/>
   <circle cx="56" cy="17" r="5" fill="#3f4650"/>
-  <text class="bar" x="430" y="21" text-anchor="middle">mcpaudit</text>
-  <rect x="0.5" y="0.5" width="859" height="540" rx="10" ry="10" fill="none" stroke="#21262d" stroke-width="1"/>
-  <text class="l" x="26" y="56" xml:space="preserve"><tspan class="p">$ </tspan><tspan class="t">npx @aethereumdev/mcp-audit "npx -y @modelcontextprotocol/server-everything"</tspan></text>
-  <text class="l" x="26" y="90" xml:space="preserve"><tspan class="h">mcpaudit</tspan><tspan class="d"> | </tspan><tspan class="t">v0.1.0</tspan><tspan class="d"> | </tspan><tspan class="t">npx -y @modelcontextprotocol/server-everything</tspan></text>
-  <text class="l" x="26" y="107" xml:space="preserve"><tspan class="h">server-everything</tspan><tspan class="d"> | </tspan><tspan class="t">v2.0.0</tspan><tspan class="d"> | </tspan><tspan class="t">protocol: pre-2026 handshake · 2025-11-25</tspan></text>
-  <text class="l" x="26" y="124" xml:space="preserve"><tspan class="r">────────────────────────────────────────────────────────────────────────────</tspan></text>
-  <text class="l" x="26" y="158" xml:space="preserve"><tspan class="h">Lane A · conformance</tspan></text>
-  <text class="l" x="26" y="192" xml:space="preserve"><tspan class="t">  </tspan><tspan class="w">WARN</tspan><tspan class="d"> | </tspan><tspan class="t">Server answered tools/list before any initialize handshake</tspan><tspan class="d"> | </tspan><tspan class="d">C8_ANSWERS_BEFORE_INITIALIZE</tspan></text>
-  <text class="l" x="26" y="209" xml:space="preserve"><tspan class="t">      On a fresh connection, with no initialize sent, this server returned a</tspan></text>
-  <text class="l" x="26" y="226" xml:space="preserve"><tspan class="t">      full tools/list. A client that supports both eras can therefore get a</tspan></text>
-  <text class="l" x="26" y="243" xml:space="preserve"><tspan class="t">      legacy-semantics answer while believing it negotiated a modern version.</tspan></text>
-  <text class="l" x="26" y="260" xml:space="preserve"><tspan class="d">      at:   </tspan><tspan class="t">tools/list (before initialize)</tspan></text>
-  <text class="l" x="26" y="277" xml:space="preserve"><tspan class="d">      fix:  </tspan><tspan class="t">Reject requests that arrive before a successful initialize</tspan></text>
-  <text class="l" x="26" y="294" xml:space="preserve"><tspan class="t">            handshake, or migrate to 2026-07-28 where every request carries</tspan></text>
-  <text class="l" x="26" y="311" xml:space="preserve"><tspan class="t">            its own protocol version.</tspan></text>
-  <text class="l" x="26" y="345" xml:space="preserve"><tspan class="t">  </tspan><tspan class="i">INFO</tspan><tspan class="d"> | </tspan><tspan class="t">Server speaks a pre-2026 revision (2025-11-25)</tspan><tspan class="d"> | </tspan><tspan class="d">C0_PRE_2026_PROTOCOL</tspan></text>
-  <text class="l" x="26" y="379" xml:space="preserve"><tspan class="d">Skipped (4) — not applicable to this server:</tspan></text>
-  <text class="l" x="26" y="396" xml:space="preserve"><tspan class="d">  C1_DISCOVER</tspan><tspan class="d"> — applies to modern servers; this one is legacy</tspan></text>
-  <text class="l" x="26" y="413" xml:space="preserve"><tspan class="d">  C3_META_VALIDATION</tspan><tspan class="d"> — applies to modern servers; this one is legacy</tspan></text>
-  <text class="l" x="26" y="430" xml:space="preserve"><tspan class="d">  C7_HTTP_HEADERS</tspan><tspan class="d"> — applies to modern servers; this one is legacy</tspan></text>
-  <text class="l" x="26" y="447" xml:space="preserve"><tspan class="d">  S5_CROSS_SERVER_SHADOWING</tspan><tspan class="d"> — needs more than one target; pass several servers in one run</tspan></text>
-  <text class="l" x="26" y="481" xml:space="preserve"><tspan class="r">────────────────────────────────────────────────────────────────────────────</tspan></text>
-  <text class="l" x="26" y="498" xml:space="preserve"><tspan class="t">1 warn, 1 info</tspan><tspan class="d"> | </tspan><tspan class="t">10 passed</tspan><tspan class="d"> | </tspan><tspan class="t">2 failed</tspan><tspan class="d"> | </tspan><tspan class="t">4 skipped</tspan><tspan class="d"> | </tspan><tspan class="t">4.8s</tspan></text>
-  <text class="l" x="26" y="515" xml:space="preserve"><tspan class="f">a first-pass linter that catches common issues — not a security audit.</tspan></text>
+  <text class="bar" x="448" y="21" text-anchor="middle">mcpaudit</text>
+  <text class="l" x="20" y="60" xml:space="preserve"><tspan fill="#56d364">$ </tspan><tspan fill="#c9d1d9">mcpaudit "npx -y @modelcontextprotocol/server-everything stdio"</tspan></text>
+  <text class="l" x="20" y="94" xml:space="preserve"><tspan fill="#56d4dd" font-weight="700">mcpaudit</tspan><tspan fill="#6e7681"> | </tspan><tspan fill="#6e7681">v0.1.0</tspan><tspan fill="#6e7681"> | </tspan><tspan fill="#c9d1d9">npx -y @modelcontextprotocol/server-everything stdio</tspan></text>
+  <text class="l" x="20" y="111" xml:space="preserve"><tspan fill="#c9d1d9">[@] mcp-servers/everything</tspan><tspan fill="#6e7681"> | </tspan><tspan fill="#c9d1d9">v2.0.0</tspan><tspan fill="#6e7681"> | </tspan><tspan fill="#c9d1d9">protocol: pre-2026 handshake · 2025-11-25</tspan></text>
+  <text class="l" x="20" y="128" xml:space="preserve"><tspan fill="#6e7681">────────────────────────────────────────────────────────────────────────────────</tspan></text>
+  <text class="l" x="20" y="145" xml:space="preserve"></text>
+  <text class="l" x="20" y="162" xml:space="preserve"><tspan fill="#c9d1d9">[#] </tspan><tspan fill="#c9d1d9" font-weight="700">Lane A · conformance</tspan></text>
+  <text class="l" x="20" y="179" xml:space="preserve"></text>
+  <text class="l" x="20" y="196" xml:space="preserve"><tspan fill="#c9d1d9">  </tspan><tspan fill="#e3b341" font-weight="700"> WARN</tspan><tspan fill="#c9d1d9"> [!]</tspan><tspan fill="#6e7681"> | </tspan><tspan fill="#c9d1d9" font-weight="700">Server answered tools/list before any initialize handshake</tspan><tspan fill="#6e7681"> | </tspan><tspan fill="#6e7681">C8_ANSWERS_BEFORE_INITIALIZE</tspan></text>
+  <text class="l" x="20" y="213" xml:space="preserve"><tspan fill="#c9d1d9">      On a fresh connection, with no initialize sent, this server returned a</tspan></text>
+  <text class="l" x="20" y="230" xml:space="preserve"><tspan fill="#c9d1d9">      full tools/list. A client that supports both eras can therefore get a</tspan></text>
+  <text class="l" x="20" y="247" xml:space="preserve"><tspan fill="#c9d1d9">      legacy-semantics answer while believing it negotiated a modern version.</tspan></text>
+  <text class="l" x="20" y="264" xml:space="preserve"><tspan fill="#c9d1d9">      Probing with server/discover first turns this ambiguity into a</tspan></text>
+  <text class="l" x="20" y="281" xml:space="preserve"><tspan fill="#c9d1d9">      deterministic failure.</tspan></text>
+  <text class="l" x="20" y="298" xml:space="preserve"><tspan fill="#c9d1d9">      </tspan><tspan fill="#6e7681">at:</tspan><tspan fill="#c9d1d9">   tools/list (before initialize)</tspan></text>
+  <text class="l" x="20" y="315" xml:space="preserve"><tspan fill="#c9d1d9">      </tspan><tspan fill="#6e7681">fix:</tspan><tspan fill="#c9d1d9">  Reject requests that arrive before a successful initialize</tspan></text>
+  <text class="l" x="20" y="332" xml:space="preserve"><tspan fill="#c9d1d9">            handshake, or migrate to 2026-07-28 where every request carries its</tspan></text>
+  <text class="l" x="20" y="349" xml:space="preserve"><tspan fill="#c9d1d9">            own protocol version.</tspan></text>
+  <text class="l" x="20" y="366" xml:space="preserve"><tspan fill="#c9d1d9">      </tspan><tspan fill="#6e7681">spec: https://modelcontextprotocol.io/specification/2026-07-28/basic/transports/stdio#backward-compatibility</tspan></text>
+  <text class="l" x="20" y="383" xml:space="preserve"></text>
+  <text class="l" x="20" y="400" xml:space="preserve"><tspan fill="#c9d1d9">  </tspan><tspan fill="#79c0ff" font-weight="700"> INFO</tspan><tspan fill="#c9d1d9"> [i]</tspan><tspan fill="#6e7681"> | </tspan><tspan fill="#c9d1d9" font-weight="700">Server speaks a pre-2026 revision (2025-11-25)</tspan><tspan fill="#6e7681"> | </tspan><tspan fill="#6e7681">C0_PRE_2026_PROTOCOL</tspan></text>
+  <text class="l" x="20" y="417" xml:space="preserve"><tspan fill="#c9d1d9">      This server answered server/discover with an error and completed an</tspan></text>
+  <text class="l" x="20" y="434" xml:space="preserve"><tspan fill="#c9d1d9">      initialize handshake at 2025-11-25. The current revision is 2026-07-28,</tspan></text>
+  <text class="l" x="20" y="451" xml:space="preserve"><tspan fill="#c9d1d9">      which removed the handshake entirely. Conformance checks specific to the</tspan></text>
+  <text class="l" x="20" y="468" xml:space="preserve"><tspan fill="#c9d1d9">      stateless protocol were skipped for this server.</tspan></text>
+  <text class="l" x="20" y="485" xml:space="preserve"><tspan fill="#c9d1d9">      </tspan><tspan fill="#6e7681">at:</tspan><tspan fill="#c9d1d9">   initialize</tspan></text>
+  <text class="l" x="20" y="502" xml:space="preserve"><tspan fill="#c9d1d9">      </tspan><tspan fill="#6e7681">fix:</tspan><tspan fill="#c9d1d9">  Track the 2026-07-28 revision when your SDK supports it: implement</tspan></text>
+  <text class="l" x="20" y="519" xml:space="preserve"><tspan fill="#c9d1d9">            server/discover, validate the required _meta keys per request, and</tspan></text>
+  <text class="l" x="20" y="536" xml:space="preserve"><tspan fill="#c9d1d9">            emit resultType on every result.</tspan></text>
+  <text class="l" x="20" y="553" xml:space="preserve"><tspan fill="#c9d1d9">      </tspan><tspan fill="#6e7681">spec: https://modelcontextprotocol.io/specification/2026-07-28/changelog</tspan></text>
+  <text class="l" x="20" y="570" xml:space="preserve"></text>
+  <text class="l" x="20" y="587" xml:space="preserve"><tspan fill="#6e7681">Skipped (4) — not applicable to this server:</tspan></text>
+  <text class="l" x="20" y="604" xml:space="preserve"><tspan fill="#6e7681">  C1_DISCOVER — applies to modern servers; this one is legacy</tspan></text>
+  <text class="l" x="20" y="621" xml:space="preserve"><tspan fill="#6e7681">  C3_META_VALIDATION — applies to modern servers; this one is legacy</tspan></text>
+  <text class="l" x="20" y="638" xml:space="preserve"><tspan fill="#6e7681">  C7_HTTP_HEADERS — applies to modern servers; this one is legacy</tspan></text>
+  <text class="l" x="20" y="655" xml:space="preserve"><tspan fill="#6e7681">  S5_CROSS_SERVER_SHADOWING — needs more than one target; pass several servers in one run</tspan></text>
+  <text class="l" x="20" y="672" xml:space="preserve"></text>
+  <text class="l" x="20" y="689" xml:space="preserve"><tspan fill="#6e7681">────────────────────────────────────────────────────────────────────────────────</tspan></text>
+  <text class="l" x="20" y="706" xml:space="preserve"><tspan fill="#e3b341">1 warn</tspan><tspan fill="#c9d1d9">, </tspan><tspan fill="#79c0ff">1 info</tspan><tspan fill="#6e7681"> | </tspan><tspan fill="#c9d1d9">10 passed</tspan><tspan fill="#6e7681"> | </tspan><tspan fill="#c9d1d9">2 failed</tspan><tspan fill="#6e7681"> | </tspan><tspan fill="#c9d1d9">4 skipped</tspan><tspan fill="#6e7681"> | </tspan><tspan fill="#c9d1d9">1.9s</tspan></text>
+  <text class="l" x="20" y="723" xml:space="preserve"><tspan fill="#6e7681">a first-pass linter that catches common issues — not a security audit.</tspan></text>
+  <rect x="0.5" y="0.5" width="894" height="743" rx="10" ry="10" fill="none" stroke="#21262d" stroke-width="1"/>
 </svg>

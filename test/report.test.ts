@@ -92,6 +92,24 @@ describe("report formats", () => {
     expect(out).toContain("[");
   });
 
+  it("treats an explicit --color as force, including off-TTY", () => {
+    // `--help` documents --color as "force or disable ANSI colour". Auto-detection
+    // alone made it a no-op when stdout was a pipe, which is also the mode the
+    // committed demo capture (scripts/make-demo-svg.mjs) runs in.
+    const pipe = { isTTY: false } as NodeJS.WriteStream;
+
+    const auto = Theme.resolve({ color: true, icons: "auto", stream: pipe });
+    expect(auto.color).toBe(false);
+
+    const forced = Theme.resolve({ color: true, colorForced: true, icons: "plain", stream: pipe });
+    expect(forced.color).toBe(true);
+
+    // --no-color still wins, and off-TTY still falls back to the 80-column form.
+    const off = Theme.resolve({ color: false, colorForced: false, icons: "auto", stream: pipe });
+    expect(off.color).toBe(false);
+    expect(forced.width).toBe(80);
+  });
+
   it("renders valid JSON carrying the finding and summary", () => {
     const parsed = JSON.parse(renderJson(stubReport())) as {
       schemaVersion: number;

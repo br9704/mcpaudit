@@ -114,7 +114,9 @@ mcpaudit/
 
 > Update at every sprint close.
 
-**Current state:** **Sprints 0–10 + Sprint D CLOSED (2026-08-15). All engineering and documentation complete; only the Sprint 11 owner-gate block remains.**
+**Current state:** **SHIPPED. `@aethereumdev/mcp-audit@0.1.0` is live on npm (2026-08-15 08:09:25Z); repo public at `br9704/mcpaudit`. Sprints 0–11 + Sprint D closed.**
+
+Verified from the registry, not from a local build: a fresh directory installs it, `npm ls --all` shows one package with no transitive dependencies, and a real audit of server-memory reproduces the committed `audits/server-memory.json` exactly. Two things a future session should not re-learn the hard way: (1) a brand-new scoped package's packument 404s for a few minutes after publish while the search index and badge already show it — poll before concluding the publish failed; (2) 0.1.0 has **no provenance attestation** and cannot get one retroactively, because only a CI publish generates one — the README says so rather than hiding it.
 
 Sprint D (documentation pass) ran as an audit, not just a rewrite, and found nine defects — four of which would have shipped publicly. The worst: all four committed `audits/*.json` leaked an absolute scratchpad path with the macOS username and a session UUID, in the exact files the README cites as proof. Also corrected: a README column citing versions its own evidence did not contain, a wrong severity order in `--help`, and **three false `[x]` marks in Sprint 9 claiming the repo was public — the GitHub repo did not exist at all.** Shipped: rewritten README (hero SVG, Mermaid architecture, how-it-was-built, limitations, status), `PROJECT.json`, `CHANGELOG.md`, and repo hygiene. Never assume a `[x]` in the plan means the outward-facing state is real — verify against the world.
 

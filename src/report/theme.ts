@@ -91,11 +91,21 @@ export class Theme {
    * Resolve rendering options from flags + environment. Colour is on only for a
    * real TTY that has not opted out, so piping into a file or CI log yields the
    * plain monospace form automatically.
+   *
+   * An explicit `--color` (`colorForced`) overrides that auto-detection, because
+   * `--help` documents the flag as "force or disable ANSI colour" — without
+   * this, `--color` was a no-op off-TTY and contradicted its own description.
    */
-  static resolve(opts: { color: boolean; icons: IconMode; stream?: NodeJS.WriteStream }): Theme {
+  static resolve(opts: {
+    color: boolean;
+    icons: IconMode;
+    colorForced?: boolean;
+    stream?: NodeJS.WriteStream;
+  }): Theme {
     const stream = opts.stream ?? process.stdout;
     const isTty = Boolean(stream.isTTY);
-    const color = opts.color && isTty && process.env["TERM"] !== "dumb";
+    const color =
+      opts.color && (opts.colorForced === true || (isTty && process.env["TERM"] !== "dumb"));
 
     let icons: IconMode = opts.icons;
     if (icons === "auto") {

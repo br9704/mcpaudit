@@ -26,6 +26,8 @@ export interface ParsedArgs {
   baseline?: string;
   timeoutMs: number;
   color: boolean;
+  /** True when `--color` was passed explicitly, which forces colour off-TTY. */
+  colorForced: boolean;
   icons: IconMode;
   help: boolean;
   version: boolean;
@@ -57,6 +59,7 @@ export function parseArgs(argv: readonly string[]): ParsedArgs {
     timeoutMs: DEFAULT_TIMEOUT_MS,
     // Respect the NO_COLOR convention up front; --color/--no-color still wins.
     color: !process.env["NO_COLOR"],
+    colorForced: false,
     icons: "auto",
     help: false,
     version: false,
@@ -135,9 +138,13 @@ export function parseArgs(argv: readonly string[]): ParsedArgs {
       }
       case "--color":
         out.color = true;
+        // Explicit --color means "force", including when stdout is a pipe;
+        // that is what --help promises and what the demo capture relies on.
+        out.colorForced = true;
         break;
       case "--no-color":
         out.color = false;
+        out.colorForced = false;
         break;
       case "--icons": {
         const v = takeValue();

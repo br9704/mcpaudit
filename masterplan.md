@@ -376,7 +376,7 @@ Per-tool hash covers `{name,title,description,inputSchema,annotations}` (canonic
 
 - [ ] `ask_human`: publish approval
 - [ ] Publish via OIDC/provenance CI on a tagged release; verify `npx <name> <public-server>` works from a clean machine
-- [⏭ Sprint 11 per A4] Repo public; topics set; README badges (npm version, provenance, CI) live — *badges are **wired**, not live; corrected 2026-08-15 during Sprint D, where the docs pass found the GitHub repo did not exist at all*
+- [x] Repo public; topics set; README badges (npm version, CI) live — **done 2026-08-15** (Sprint D created the repo, which until then did not exist; the earlier `[x]` here was false). No provenance badge is shown, because 0.1.0 has no attestation.
 - [⏭ Sprint 11 per A4] Cross-link from brunojaamaa.dev; draft the launch note (honest scope, invite contributions)
 - [⏭ Sprint 11 per A4] Optional: submit to the MCP registry / awesome-mcp-security list (real tool, not link-farming)
 
@@ -496,10 +496,18 @@ Owner's call: `aethereum-dev` is the account to use, so the package ships as **`
 **What this validated:** the one-line-rename premise from CLAUDE.md's Naming section mostly held, but not entirely. `src/brand.ts` was one line; the surrounding blast radius was `package.json`, `package-lock.json`, README (badge URL, npm link, seven `npx` invocations), `PROJECT.json`, `docs/media/demo.svg`, `test/report.test.ts` (two hard-coded literals — a deliberate canary), the generated `RULES.md`, and all four `audits/*.json`, whose `tool.name` records the auditing tool. The audits were **re-run live** rather than string-replaced, so the committed evidence stays real: identical findings (2/2/2/3), same protocols, same `serverInfo`. 113/113 tests green, lint and typecheck clean after the change.
 
 **Historical records above are left as written** — they were accurate when made. A1's reasoning about the squatted `mcp-audit` stub still stands; only the scope changed.
-- [ ] `ask_human`: publish approval → tag release → verify provenance badge + clean-machine `npx`
+- [x] `ask_human`: publish approval → **PUBLISHED 2026-08-15 08:09:25Z** as `@aethereumdev/mcp-audit@0.1.0`, manually from the workstation with 2FA. Verify provenance badge + clean-machine `npx` → see delta below.
 - [ ] `ask_human` per disclosure: send any prepared vulnerability report; hold the README table generic until patched
 - [ ] Flip repo public; set topics; cross-link from brunojaamaa.dev; post the launch note
 - [ ] Optional: file the `mcp-audit` npm dispute ticket (zero-cost lottery ticket per A1)
 
 **Acceptance:** every owner decision made explicitly, nothing published or disclosed without it.
+**As-shipped delta:** ✅ **PUBLISHED 2026-08-15.** `@aethereumdev/mcp-audit@0.1.0` is live on npm (published 08:09:25Z, manually with 2FA after the scope change in A8). Repo public at `br9704/mcpaudit` with description and 8 topics; CI green on Node 20/22/24.
+
+- **Clean-room verification passed end to end**, from the registry rather than a local tarball: fresh directory → `npm i @aethereumdev/mcp-audit` → `npm ls --all` prints exactly one package with **no transitive dependencies** → `mcpaudit --version` → `0.1.0` → a real audit of `@modelcontextprotocol/server-memory` returns `1 warn, 1 info | 10 passed | 2 failed | 4 skipped`, exit 1 — identical to the committed `audits/server-memory.json`. The supply-chain claim is now demonstrated from the published artifact, not just from `npm pack`.
+- **Registry propagation gotcha, worth knowing:** for ~4 minutes after publishing a brand-new scoped package, the packument endpoint returned **404** while the search index and shields.io badge already showed 0.1.0. A clean-machine install fails during that window in a way that looks exactly like a failed publish. Poll `https://registry.npmjs.org/@scope%2Fname` until it returns 200 before concluding anything.
+- **0.1.0 carries no provenance attestation** (`dist.attestations` absent) and never can — only a CI publish generates one. Stated openly in the README's Status section rather than left for a reader to discover. The provenance badge was deliberately *not* added.
+- **Trusted publishing is web-UI only:** npm 11.6.2 exposes no CLI surface for it (`npm access` covers status, mfa and team grants; `npm help-search "trusted publisher"` returns nothing). Configuration therefore stays an owner action.
+
+**Deferred:** trusted-publisher configuration (owner, web UI) so `v0.1.1` onward is attested; the `mcp-audit` dispute ticket (owner, support form); brunojaamaa.dev cross-link (tracked in the portfolio repo, which consumes this repo's `PROJECT.json`).
 **As-shipped delta:** · **Deferred:**

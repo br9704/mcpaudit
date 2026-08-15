@@ -289,6 +289,11 @@ detection, terminal/JSON/SARIF output, pin-and-drift, 113 tests, CI on three Nod
 versions, and a release pipeline on npm trusted publishing (OIDC) with automatic
 provenance. Release is tag-driven; no npm token exists in the repo or in CI.
 
+One caveat worth stating rather than letting you discover it: **0.1.0 was published by
+hand, so it carries no provenance attestation.** Only a CI publish can produce one, and
+none can be added retroactively. Releases from 0.1.1 onward go through the tagged OIDC
+pipeline and are attested.
+
 Next, in rough order of usefulness: resource and prompt coverage, an env-dump rule for
 tools that return the whole environment, `S8` token passthrough once there is anything to
 test it against, and `--theme` loading for the TOML palettes the terminal report already
