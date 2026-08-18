@@ -39,13 +39,13 @@ below is either an owner action or a post-v1 idea.
 
 ## Owner actions, the only real blockers
 
-- [ ] Configure the npm trusted publisher for `@aethereumdev/mcp-audit`, so `v0.1.1` onward carries provenance. **Web UI only**, npm 11.6.2 exposes no CLI surface for it #task [project:: MCP Audit] [priority:: high]
-- [ ] Optional: file the `mcp-audit` npm name-dispute ticket. Zero-cost lottery ticket per A1, plan nothing around it #task [project:: MCP Audit] [priority:: low]
+- [ ] Configure the npm trusted publisher for `@aethereumdev/mcp-audit`, so `v0.1.1` onward carries provenance. **Web UI only**, npm 11.6.2 exposes no CLI surface for it #task [project:: MCP Audit] [priority:: high] ^t-c9tgyltq
+- [ ] Optional: file the `mcp-audit` npm name-dispute ticket. Zero-cost lottery ticket per A1, plan nothing around it #task [project:: MCP Audit] [priority:: low] ^t-q5p24lx7
 
 ## Blocked on another repo
 
-- [ ] Promote mcpaudit out of `stagedProjects` in the portfolio repo. The 6-step promotion procedure's only gate was "a real npm page", now satisfied. It was **not** executed because the portfolio working tree holds **57** uncommitted files including `lib/projects.ts`, `public/llms.txt` and 30 SEO baselines, which are exactly the files promotion touches #task [project:: MCP Audit] [priority:: high]
-- [ ] While doing that, fix two now-false claims there: every portfolio document still says `@br9704/mcp-audit`, and `docs/CLAIMS-REGISTER.md` asserts mcpaudit 404s on npm #task [project:: MCP Audit] [priority:: high]
+- [ ] Promote mcpaudit out of `stagedProjects` in the portfolio repo. The 6-step promotion procedure's only gate was "a real npm page", now satisfied. It was **not** executed because the portfolio working tree holds **57** uncommitted files including `lib/projects.ts`, `public/llms.txt` and 30 SEO baselines, which are exactly the files promotion touches #task [project:: MCP Audit] [priority:: high] ^t-z996yags
+- [ ] While doing that, fix two now-false claims there: every portfolio document still says `@br9704/mcp-audit`, and `docs/CLAIMS-REGISTER.md` asserts mcpaudit 404s on npm #task [project:: MCP Audit] [priority:: high] ^t-tecealjp
 
 ## Post-v1 backlog, in the order the README ranks it
 
@@ -61,8 +61,8 @@ below is either an owner action or a post-v1 idea.
 
 ## Housekeeping worth doing
 
-- [ ] Fix the architecture index in `CLAUDE.md`, which still names `commander` and `zod`, both removed by amendment A5 #task [project:: MCP Audit]
-- [ ] Move the bearer token out of `.mcp.json`, `.cursor/mcp.json`, `.vscode/mcp.json` and `opencode.json` into env-var indirection, matching `.codex/config.toml` #task [project:: MCP Audit]
+- [ ] Fix the architecture index in `CLAUDE.md`, which still names `commander` and `zod`, both removed by amendment A5 #task [project:: MCP Audit] ^t-k0keg033
+- [ ] Move the bearer token out of `.mcp.json`, `.cursor/mcp.json`, `.vscode/mcp.json` and `opencode.json` into env-var indirection, matching `.codex/config.toml` #task [project:: MCP Audit] ^t-wsdvqrdq
 
 ## Related
 

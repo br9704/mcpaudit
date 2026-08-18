@@ -108,11 +108,11 @@ error-severity finding, so nothing needed a private disclosure.
 
 ## Next 5 actions
 
-- [ ] Configure the npm trusted publisher for `@aethereumdev/mcp-audit` so `v0.1.1` onward carries provenance #task [project:: MCP Audit] [priority:: high]
-- [ ] Promote mcpaudit out of `stagedProjects` on brunojaamaa.dev once the portfolio tree is clean, and fix the two false claims about it there #task [project:: MCP Audit] [priority:: high]
-- [ ] Move the bearer token in `.mcp.json`, `.cursor/mcp.json`, `.vscode/mcp.json` and `opencode.json` to env-var indirection, matching `.codex/config.toml` #task [project:: MCP Audit]
-- [ ] Extend coverage to resources and prompt templates, which carry the same injection surface and are not checked #task [project:: MCP Audit]
-- [ ] Add the env-dump rule for tools that return the whole environment, listed as a good first issue #task [project:: MCP Audit]
+- [ ] Configure the npm trusted publisher for `@aethereumdev/mcp-audit` so `v0.1.1` onward carries provenance #task [project:: MCP Audit] [priority:: high] ^t-dt5pdvxn
+- [ ] Promote mcpaudit out of `stagedProjects` on brunojaamaa.dev once the portfolio tree is clean, and fix the two false claims about it there #task [project:: MCP Audit] [priority:: high] ^t-m28krmcz
+- [ ] Move the bearer token in `.mcp.json`, `.cursor/mcp.json`, `.vscode/mcp.json` and `opencode.json` to env-var indirection, matching `.codex/config.toml` #task [project:: MCP Audit] ^t-rogc5rbc
+- [ ] Extend coverage to resources and prompt templates, which carry the same injection surface and are not checked #task [project:: MCP Audit] ^t-tq1mkc63
+- [ ] Add the env-dump rule for tools that return the whole environment, listed as a good first issue #task [project:: MCP Audit] ^t-yljk6ty0
 
 ## The ten links that matter
 
