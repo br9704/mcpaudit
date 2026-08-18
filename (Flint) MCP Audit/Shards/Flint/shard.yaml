@@ -1,0 +1,30 @@
+shard-spec: "0.2.0"
+version: "0.2.0"
+name: Flint
+shorthand: f
+description: Core agent environment for Flint workspaces. Defines shard rules, template rules, workspace conventions, and note types.
+
+dependencies:
+  - source: NUU-Cognition/shard-invironments
+
+folders:
+  - Mesh/Main
+  - Mesh/Sections
+  - Mesh/Groups
+
+install:
+  - source: inst-f-section_new.md
+    dest: Mesh/Main/(Section) New/(Section) New.md
+    mode: once
+  - source: inst-f-section_working.md
+    dest: Mesh/Main/(Section) Working/(Section) Working.md
+    mode: once
+  - source: inst-f-section_consolidated.md
+    dest: Mesh/Main/(Section) Consolidated/(Section) Consolidated.md
+    mode: once
+  - source: inst-f-flint_init.md
+    dest: Mesh/(System) Flint Init.md
+    mode: once
+  - source: otmp-f-default.md
+    dest: Shards/(Shards) Obsidian Templates/otmp-f-default.md
+    mode: force

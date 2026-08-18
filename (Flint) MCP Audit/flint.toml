@@ -1,0 +1,15 @@
+[flint]
+name = "MCP Audit"
+
+[shards]
+installed = [
+  { name = "flint", remote = "NUU-Cognition/shard-flint" },
+  { name = "orbh", remote = "NUU-Cognition/shard-orbh" },
+]
+dev-remote = []
+dev-local = []
+
+[references]
+codebases = [
+  { name = "MCP Audit" },
+]

@@ -1,0 +1,22 @@
+# === Flint Managed (do not edit) ===
+# Flint internals
+.flint/
+.steel/
+.obsidian/
+.mesh/
+.orbh/
+Shards/(Shards) Local State/
+
+# Orb runtime state (machine-local)
+.orb/spaces/local/
+.orb/indexes/
+.orb/jobs/
+.orb/tmp/
+.orb/orbh.local/
+.orb/quarantine/
+.orb/reports/
+.orb/workflows/instances/
+
+# Shards (remote-backed)
+Shards/(Dev Remote) */
+# === End Flint Managed ===
