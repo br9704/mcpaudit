@@ -7,7 +7,7 @@ tags:
 description: Settled nodes — consolidated into their long-term form
 orbh-sessions: null
 template: "[[tmp-ie-section-v0.1]]"
-created: 2026-08-17
+created: "2026-08-17"
 modified: 2026-08-17
 ---
 
